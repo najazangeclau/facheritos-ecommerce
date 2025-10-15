@@ -4111,15 +4111,33 @@ p {
   /* Navegación más compacta */
   nav {
     padding: 5px 0;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 15px 15px;
+    margin: 0 10px 10px 10px;
   }
   
   .menu {
     gap: 5px;
+    padding: 8px 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    margin: 0 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
   
   .menu a {
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
+    margin: 2px 5px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .menu a:hover {
+    background: rgba(138, 43, 226, 0.1);
+    transform: translateY(-1px);
   }
   
   /* Productos en móvil */
@@ -4234,15 +4252,29 @@ p {
     font-size: 12px;
   }
   
-  /* Navegación en columna */
+  /* Navegación en columna con mejor espaciado */
   .menu {
     flex-direction: column;
-    gap: 3px;
+    gap: 8px;
+    padding: 10px 0;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    margin: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
   
   .menu a {
-    padding: 10px;
-    font-size: 13px;
+    padding: 12px 15px;
+    font-size: 14px;
+    margin: 2px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+  }
+  
+  .menu a:hover {
+    background: rgba(138, 43, 226, 0.1);
+    transform: translateY(-2px);
   }
   
   /* Productos en una columna */
@@ -4302,24 +4334,86 @@ p {
 
 /* Mejoras para landscape en móviles */
 @media (max-width: 768px) and (orientation: landscape) {
+  /* Ajustar el body para landscape */
+  body {
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
   .logo-container img {
-    width: 30%;
-    max-width: 80px;
+    width: 25%;
+    max-width: 70px;
   }
   
   .subtitulo-logo {
-    font-size: 12px;
-    margin-top: -5px;
+    font-size: 11px;
+    margin-top: -3px;
   }
   
+  /* Menú horizontal compacto */
   .menu {
     flex-direction: row;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 4px;
+    padding: 5px 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    margin: 5px 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    justify-content: center;
   }
   
   .menu a {
-    padding: 6px 10px;
+    padding: 6px 8px;
+    font-size: 11px;
+    margin: 1px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.9);
+    min-width: fit-content;
+  }
+  
+  /* Contenido principal más compacto */
+  main {
+    padding: 10px 5px;
+    margin-top: 5px;
+  }
+  
+  /* Productos en landscape */
+  .galeria {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    padding: 8px;
+  }
+  
+  .producto {
+    margin: 5px 0;
+    padding: 8px;
+  }
+  
+  .producto img {
+    height: 120px;
+  }
+  
+  .producto h3 {
+    font-size: 14px;
+    margin: 5px 0;
+  }
+  
+  .producto p {
+    font-size: 11px;
+    margin: 3px 0;
+  }
+  
+  /* Botones más pequeños en landscape */
+  .boton-carrito, .boton-detalles {
+    padding: 8px;
     font-size: 12px;
+    min-height: 36px;
+  }
+  
+  /* Footer más compacto */
+  .footer-content {
+    gap: 10px;
+    padding: 10px 0;
   }
 }
