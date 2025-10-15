@@ -4092,3 +4092,234 @@ p {
     opacity: 1;
   }
 }
+
+/* ===== MEJORAS RESPONSIVAS PARA MÓVILES ===== */
+
+/* Mejoras generales para móviles */
+@media (max-width: 768px) {
+  /* Logo más pequeño en móviles */
+  .logo-container img {
+    width: 50%;
+    max-width: 120px;
+  }
+  
+  .subtitulo-logo {
+    font-size: 14px;
+    margin-top: -10px;
+  }
+  
+  /* Navegación más compacta */
+  nav {
+    padding: 5px 0;
+  }
+  
+  .menu {
+    gap: 5px;
+  }
+  
+  .menu a {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  
+  /* Productos en móvil */
+  .producto {
+    margin: 8px 0;
+    padding: 12px;
+  }
+  
+  .producto img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .producto h3 {
+    font-size: 16px;
+    margin: 8px 0;
+  }
+  
+  .producto p {
+    font-size: 13px;
+    margin: 4px 0;
+  }
+  
+  /* Botones más grandes en móvil */
+  .boton-carrito, .boton-detalles {
+    width: 100%;
+    margin: 4px 0;
+    padding: 12px;
+    font-size: 14px;
+    min-height: 44px; /* Tamaño mínimo para touch */
+  }
+  
+  /* Formularios más amigables en móvil */
+  .contacto-form-card, .formulario-compra-container {
+    margin: 5px;
+    padding: 12px;
+  }
+  
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* Evita zoom en iOS */
+    min-height: 44px;
+  }
+  
+  /* Carrito más compacto */
+  .carrito-container {
+    margin: 5px;
+    padding: 8px;
+  }
+  
+  .carrito-table {
+    font-size: 11px;
+  }
+  
+  .carrito-table th, .carrito-table td {
+    padding: 6px 3px;
+  }
+  
+  /* Modal más grande en móvil */
+  .modal-content {
+    width: 95%;
+    margin: 5px;
+    padding: 12px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  
+  .product-detail-content {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .product-detail-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Footer más compacto */
+  .footer-content {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  /* Reseñas más compactas */
+  .review-card {
+    margin: 8px 0;
+    padding: 12px;
+  }
+  
+  .review-card h3 {
+    font-size: 16px;
+  }
+  
+  .review-card p {
+    font-size: 13px;
+  }
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  /* Logo aún más pequeño */
+  .logo-container img {
+    width: 60%;
+    max-width: 100px;
+  }
+  
+  .subtitulo-logo {
+    font-size: 12px;
+  }
+  
+  /* Navegación en columna */
+  .menu {
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .menu a {
+    padding: 10px;
+    font-size: 13px;
+  }
+  
+  /* Productos en una columna */
+  .galeria {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    padding: 10px;
+  }
+  
+  /* Botones más grandes */
+  .boton-carrito, .boton-detalles {
+    padding: 14px;
+    font-size: 15px;
+    min-height: 48px;
+  }
+  
+  /* Formularios más grandes */
+  .form-group input, .form-group select, .form-group textarea {
+    padding: 14px;
+    font-size: 16px;
+    min-height: 48px;
+  }
+  
+  /* Carrito más simple */
+  .carrito-table {
+    font-size: 10px;
+  }
+  
+  .carrito-table th, .carrito-table td {
+    padding: 4px 2px;
+  }
+  
+  /* Modal más grande */
+  .modal-content {
+    width: 98%;
+    margin: 2px;
+    padding: 10px;
+  }
+  
+  /* Texto más legible */
+  body {
+    font-size: 14px;
+  }
+  
+  h1 {
+    font-size: 24px;
+  }
+  
+  h2 {
+    font-size: 20px;
+  }
+  
+  h3 {
+    font-size: 18px;
+  }
+}
+
+/* Mejoras para landscape en móviles */
+@media (max-width: 768px) and (orientation: landscape) {
+  .logo-container img {
+    width: 30%;
+    max-width: 80px;
+  }
+  
+  .subtitulo-logo {
+    font-size: 12px;
+    margin-top: -5px;
+  }
+  
+  .menu {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .menu a {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
