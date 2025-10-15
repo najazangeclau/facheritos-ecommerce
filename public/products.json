@@ -1,0 +1,175 @@
+[
+  {
+    "id": 1050757727,
+    "nombre": "Medias Con Dibujo",
+    "precio": 12500,
+    "imagen": "/img/ropa-nina/medias-con-dibujo-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 871828533,
+    "nombre": "Pollera Amplia",
+    "precio": 11000,
+    "imagen": "/img/ropa-nina/pollera-amplia-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 1815510402,
+    "nombre": "Pollera Recta",
+    "precio": 10500,
+    "imagen": "/img/ropa-nina/pollera-recta-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 205746729,
+    "nombre": "Remera Lisa",
+    "precio": 9500,
+    "imagen": "/img/ropa-nina/remera-lisa-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 1445695875,
+    "nombre": "Vestido Flores",
+    "precio": 11000,
+    "imagen": "/img/ropa-nina/vestido-flores-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 4805953,
+    "nombre": "Vestido Liso",
+    "precio": 10000,
+    "imagen": "/img/ropa-nina/vestido-liso-photoroom.png",
+    "categoria": "ninas"
+  },
+  {
+    "id": 987654321,
+    "nombre": "Remera de Algodón",
+    "precio": 4500,
+    "imagen": "/img/ropa-nino/remera.png",
+    "categoria": "ninos",
+    "descripcion": "Remera de algodón suave y fresca, perfecta para el uso diario y para jugar cómodo."
+  },
+  {
+    "id": 123456789,
+    "nombre": "Pantalón Cargo",
+    "precio": 8900,
+    "imagen": "/img/ropa-nino/pantalon cargo.png",
+    "categoria": "ninos",
+    "descripcion": "Pantalón cargo resistente, ideal para aventuras y juegos."
+  },
+  {
+    "id": 111111111,
+    "nombre": "Jogging",
+    "precio": 9500,
+    "imagen": "/img/ropa-nino/jogging.png",
+    "categoria": "ninos",
+    "descripcion": "Pantalón jogging cómodo y resistente, ideal para deportes y uso diario."
+  },
+  {
+    "id": 222222222,
+    "nombre": "Bermuda Jean",
+    "precio": 4500,
+    "imagen": "/img/ropa-nino/bermuda.png",
+    "categoria": "ninos",
+    "descripcion": "Bermuda de jean cómoda y resistente, ideal para el verano y actividades al aire libre."
+  },
+  {
+    "id": 333333333,
+    "nombre": "Campera de Abrigo",
+    "precio": 12000,
+    "imagen": "/img/ropa-nino/campera.png",
+    "categoria": "ninos",
+    "descripcion": "Campera de abrigo con capucha, perfecta para mantener el calor en días fríos."
+  },
+  {
+    "id": 444444444,
+    "nombre": "Buzo con Capucha",
+    "precio": 11000,
+    "imagen": "/img/ropa-nino/buzo.png",
+    "categoria": "ninos",
+    "descripcion": "Buzo con capucha suave y abrigado, ideal para días frescos y actividades al aire libre."
+  },
+  {
+    "id": 631270979,
+    "nombre": "Anteojo",
+    "precio": 7500,
+    "imagen": "/img/accesorios/anteojo.png",
+    "categoria": "accesorios"
+  },
+  {
+    "id": 1465312009,
+    "nombre": "Cinturon",
+    "precio": 8000,
+    "imagen": "/img/accesorios/cinturon.png",
+    "categoria": "accesorios"
+  },
+  {
+    "id": 222920288,
+    "nombre": "Gorra",
+    "precio": 6500,
+    "imagen": "/img/accesorios/gorra.png",
+    "categoria": "accesorios"
+  },
+  {
+    "id": 306671586,
+    "nombre": "Mochila",
+    "precio": 7500,
+    "imagen": "/img/accesorios/mochila.png",
+    "categoria": "accesorios"
+  },
+  {
+    "id": 1871892432,
+    "nombre": "Vincha",
+    "precio": 7000,
+    "imagen": "/img/accesorios/vincha.png",
+    "categoria": "accesorios"
+  },
+  {
+    "id": 555555555,
+    "nombre": "Medias Celeste",
+    "precio": 3500,
+    "imagen": "/img/ropa-bebe/medias-celeste-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Medias suaves y cómodas para los más pequeños, ideales para mantener sus pies abrigados."
+  },
+  {
+    "id": 666666666,
+    "nombre": "Pantalón Bicolor",
+    "precio": 6500,
+    "imagen": "/img/ropa-bebe/pantalon-bicolor-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Pantalón cómodo con diseño bicolor, perfecto para el día a día de tu bebé."
+  },
+  {
+    "id": 777777777,
+    "nombre": "Pollera con Flores",
+    "precio": 5500,
+    "imagen": "/img/ropa-bebe/pollera-con-flores-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Pollera adorable con estampado floral, ideal para ocasiones especiales."
+  },
+  {
+    "id": 888888888,
+    "nombre": "Remera Blanca",
+    "precio": 4500,
+    "imagen": "/img/ropa-bebe/remera-blanca-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Remera básica de algodón, suave y fresca para la comodidad de tu bebé."
+  },
+  {
+    "id": 999999999,
+    "nombre": "Vestido Celeste con Lunares",
+    "precio": 7500,
+    "imagen": "/img/ropa-bebe/vestido-celeste-con-lunares-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Vestido encantador con lunares, perfecto para que tu pequeña luzca hermosa."
+  },
+  {
+    "id": 101010101,
+    "nombre": "Vestido Multicolor con Flores",
+    "precio": 8000,
+    "imagen": "/img/ropa-bebe/vestido-multicolore-con-flores-photoroom.png",
+    "categoria": "bebe",
+    "descripcion": "Vestido colorido con flores, lleno de alegría y estilo para tu bebé."
+  }
+]
