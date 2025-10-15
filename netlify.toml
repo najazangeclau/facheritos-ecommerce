@@ -50,10 +50,10 @@
 
 # Variables de entorno (para Formspree)
 [context.production.environment]
-  VITE_FORMSPREE_CONTACTO = "https://formspree.io/f/YOUR_FORM_ID"
-  VITE_FORMSPREE_COMPRA = "https://formspree.io/f/YOUR_FORM_ID_2"
+  VITE_FORMSPREE_CONTACTO = "https://formspree.io/f/xqaywbjl"
+  VITE_FORMSPREE_COMPRA = "https://formspree.io/f/xyznljvn"
 
 [context.deploy-preview.environment]
-  VITE_FORMSPREE_CONTACTO = "https://formspree.io/f/YOUR_FORM_ID"
-  VITE_FORMSPREE_COMPRA = "https://formspree.io/f/YOUR_FORM_ID_2"
+  VITE_FORMSPREE_CONTACTO = "https://formspree.io/f/xqaywbjl"
+  VITE_FORMSPREE_COMPRA = "https://formspree.io/f/xyznljvn"
 
