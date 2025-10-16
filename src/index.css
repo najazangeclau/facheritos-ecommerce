@@ -4108,55 +4108,69 @@ p {
     margin-top: -6px;
   }
   
-  /* Navegación optimizada para móvil */
+  /* Navegación optimizada para móvil - EXACTAMENTE COMO PC PERO VERTICAL */
   nav {
-    padding: 6px 0;
+    padding: 8px 0;
     background: transparent;
-    margin: 0 8px;
+    margin: 0 10px;
   }
   
   .menu {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    padding: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     max-width: 100%;
+    list-style: none;
+    margin: 0;
+  }
+  
+  .menu > li {
+    flex: 1;
+    min-width: 0;
+    max-width: calc(33.333% - 6px);
   }
   
   .menu a {
-    padding: 8px 4px;
-    font-size: 11px;
+    padding: 10px 6px;
+    font-size: 12px;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.9);
     transition: all 0.3s ease;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 36px;
+    min-height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
+    text-decoration: none;
+    color: darkblue;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .menu a:hover {
     background: rgba(138, 43, 226, 0.1);
     transform: translateY(-1px);
+    color: violet;
   }
   
   /* Ajustar texto del menú para que quepa mejor */
-  .menu a:nth-child(1) { font-size: 10px; } /* Inicio */
-  .menu a:nth-child(2) { font-size: 10px; } /* Niñas */
-  .menu a:nth-child(3) { font-size: 10px; } /* Niños */
-  .menu a:nth-child(4) { font-size: 10px; } /* Bebé */
-  .menu a:nth-child(5) { font-size: 10px; } /* Accesorios */
-  .menu a:nth-child(6) { font-size: 10px; } /* 2x1 */
-  .menu a:nth-child(7) { font-size: 10px; } /* Liquidación */
-  .menu a:nth-child(8) { font-size: 10px; } /* Contacto */
+  .menu a:nth-child(1) { font-size: 11px; } /* Inicio */
+  .menu a:nth-child(2) { font-size: 11px; } /* Niñas */
+  .menu a:nth-child(3) { font-size: 11px; } /* Niños */
+  .menu a:nth-child(4) { font-size: 11px; } /* Bebé */
+  .menu a:nth-child(5) { font-size: 11px; } /* Accesorios */
+  .menu a:nth-child(6) { font-size: 11px; } /* 2x1 */
+  .menu a:nth-child(7) { font-size: 11px; } /* Liquidación */
+  .menu a:nth-child(8) { font-size: 11px; } /* Contacto */
   
   /* Productos como en PC pero en vertical */
   .galeria {
@@ -4489,16 +4503,20 @@ p {
     margin-top: -4px;
   }
   
-  /* Menú más compacto */
+  /* Menú más compacto para pantallas muy pequeñas */
   .menu {
-    gap: 3px;
-    padding: 4px;
+    gap: 6px;
+    padding: 6px;
+  }
+  
+  .menu > li {
+    max-width: calc(33.333% - 4px);
   }
   
   .menu a {
-    padding: 6px 3px;
+    padding: 8px 4px;
     font-size: 10px;
-    min-height: 32px;
+    min-height: 36px;
   }
   
   /* Productos en una columna para pantallas muy pequeñas */
