@@ -59,9 +59,35 @@ function Navbar() {
         </li>
         <li style={{marginLeft: '10px'}}>
           <div className="carrito-header">
-            <Link to="/carrito" className="carrito-link">
-              <i className="fas fa-shopping-cart"></i>
-              <span id="contador-carrito" className="contador-carrito">{totalItems}</span>
+            <Link to="/carrito" className="carrito-link" style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              textDecoration: 'none',
+              color: 'darkblue',
+              fontWeight: '600',
+              padding: '8px 4px',
+              transition: 'color 0.3s, transform 0.2s',
+              fontSize: '10px',
+              minHeight: '36px',
+              justifyContent: 'center',
+              width: '100%'
+            }}>
+              <span>🛒</span>
+              <span id="contador-carrito" className="contador-carrito" style={{
+                background: '#8a2be2',
+                color: 'white',
+                borderRadius: '50%',
+                width: '18px',
+                height: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '9px',
+                fontWeight: 'bold'
+              }}>
+                {totalItems}
+              </span>
             </Link>
           </div>
         </li>
@@ -73,28 +99,33 @@ function Navbar() {
               <Link to="/profile" style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '8px',
+                gap: '4px',
                 textDecoration: 'none',
                 color: 'darkblue',
                 fontWeight: '600',
-                padding: '12px 15px',
-                transition: 'color 0.3s, transform 0.2s'
+                padding: '8px 4px',
+                transition: 'color 0.3s, transform 0.2s',
+                fontSize: '10px',
+                minHeight: '36px',
+                justifyContent: 'center'
               }}>
                 <span style={{
-                  width: '24px',
-                  height: '24px',
+                  width: '20px',
+                  height: '20px',
                   borderRadius: '50%',
                   background: '#8a2be2',
                   color: 'white',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '12px',
+                  fontSize: '10px',
                   fontWeight: 'bold'
                 }}>
                   {user?.avatar}
                 </span>
-                {user?.name}
+                <span style={{ display: window.innerWidth > 480 ? 'inline' : 'none' }}>
+                  {user?.name}
+                </span>
               </Link>
             </li>
             <li>
@@ -109,10 +140,15 @@ function Navbar() {
                   border: 'none',
                   color: 'darkblue',
                   fontWeight: '600',
-                  padding: '12px 15px',
+                  padding: '8px 4px',
                   cursor: 'pointer',
                   transition: 'color 0.3s, transform 0.2s',
-                  fontSize: '16px'
+                  fontSize: '10px',
+                  minHeight: '36px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '100%'
                 }}
                 onMouseOver={(e) => {
                   e.target.style.color = 'violet'
@@ -134,10 +170,16 @@ function Navbar() {
                 textDecoration: 'none',
                 color: 'darkblue',
                 fontWeight: '600',
-                padding: '12px 15px',
-                transition: 'color 0.3s, transform 0.2s'
+                padding: '8px 4px',
+                transition: 'color 0.3s, transform 0.2s',
+                fontSize: '10px',
+                minHeight: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%'
               }}>
-                🔐 Iniciar Sesión
+                🔐 Login
               </Link>
             </li>
             <li>
@@ -145,10 +187,16 @@ function Navbar() {
                 textDecoration: 'none',
                 color: 'darkblue',
                 fontWeight: '600',
-                padding: '12px 15px',
-                transition: 'color 0.3s, transform 0.2s'
+                padding: '8px 4px',
+                transition: 'color 0.3s, transform 0.2s',
+                fontSize: '10px',
+                minHeight: '36px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '100%'
               }}>
-                📝 Registrarse
+                📝 Registro
               </Link>
             </li>
           </>
