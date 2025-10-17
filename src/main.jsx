@@ -7,6 +7,7 @@ import Home from './pages/Home.jsx'
 import Productos from './pages/Productos.jsx'
 import Carrito from './pages/Carrito.jsx'
 import { CartProvider } from './context/CartContext.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 import Contacto from './pages/Contacto.jsx'
 import ProductosNina from './pages/ProductosNina.jsx'
 import ProductosNino from './pages/ProductosNino.jsx'
@@ -19,6 +20,10 @@ import WhatsApp from './pages/WhatsApp.jsx'
 import Ubicacion from './pages/Ubicacion.jsx'
 import FormularioCompra from './pages/FormularioCompra.jsx'
 import AdminPanel from './pages/AdminPanel.jsx'
+import Login from './pages/Login.jsx'
+import Register from './pages/Register.jsx'
+import UserProfile from './pages/UserProfile.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 const router = createBrowserRouter([
   {
@@ -39,15 +44,34 @@ const router = createBrowserRouter([
       { path: 'carrito', element: <Carrito /> },
       { path: 'formulario-compra', element: <FormularioCompra /> },
       { path: 'contacto', element: <Contacto /> },
-      { path: 'admin', element: <AdminPanel /> },
+      { path: 'login', element: <Login /> },
+      { path: 'register', element: <Register /> },
+      { 
+        path: 'profile', 
+        element: (
+          <ProtectedRoute>
+            <UserProfile />
+          </ProtectedRoute>
+        )
+      },
+      { 
+        path: 'admin', 
+        element: (
+          <ProtectedRoute requiredRole="admin">
+            <AdminPanel />
+          </ProtectedRoute>
+        )
+      },
     ],
   },
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <CartProvider>
-      <RouterProvider router={router} />
-    </CartProvider>
+    <AuthProvider>
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
+    </AuthProvider>
   </StrictMode>,
 )

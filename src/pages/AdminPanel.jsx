@@ -1,22 +1,21 @@
 import { useState, useEffect } from 'react'
 import { contactosService, comprasService, reviewsService } from '../services/forms'
 import { localUtils } from '../services/localStorage'
+import { useAuth } from '../context/AuthContext'
 
 function AdminPanel() {
   const [activeTab, setActiveTab] = useState('contactos')
   const [contactos, setContactos] = useState([])
   const [compras, setCompras] = useState([])
   const [reviews, setReviews] = useState([])
-  const [password, setPassword] = useState('')
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-
-  const ADMIN_PASSWORD = 'admin123'
+  
+  const { user, logout } = useAuth()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (user) {
       loadData()
     }
-  }, [isAuthenticated])
+  }, [user])
 
   const loadData = async () => {
     setContactos(contactosService.obtenerContactos())
@@ -32,19 +31,10 @@ function AdminPanel() {
     }
   }
 
-  const handleLogin = (e) => {
-    e.preventDefault()
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true)
-      setPassword('')
-    } else {
-      alert('Contraseña incorrecta')
-    }
-  }
-
   const handleLogout = () => {
-    setIsAuthenticated(false)
-    setPassword('')
+    if (confirm('¿Estás seguro de que querés cerrar sesión?')) {
+      logout()
+    }
   }
 
   const eliminarContacto = (id) => {
@@ -89,42 +79,28 @@ function AdminPanel() {
     }
   }
 
-  if (!isAuthenticated) {
-    return (
-      <main className="admin-login">
-        <div className="admin-login-container">
-          <h1>🔐 Panel de Administración</h1>
-          <p>Ingresá la contraseña para acceder al panel de administración</p>
-          
-          <form onSubmit={handleLogin} className="admin-login-form">
-            <input
-              type="password"
-              placeholder="Contraseña"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-            <button type="submit">Ingresar</button>
-          </form>
-        </div>
-      </main>
-    )
-  }
+  // El componente ya no necesita verificar autenticación aquí
+  // porque ProtectedRoute se encarga de eso
 
   return (
     <main className="admin-panel">
       <div className="admin-header">
         <h1>📊 Panel de Administración</h1>
-        <div className="admin-actions">
-          <button onClick={exportarDatos} className="btn-export">
-            📥 Exportar Datos
-          </button>
-          <button onClick={limpiarDatos} className="btn-clear">
-            🗑️ Limpiar Todo
-          </button>
-          <button onClick={handleLogout} className="btn-logout">
-            🚪 Salir
-          </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+          <span style={{ color: '#666' }}>
+            👋 Hola, {user?.name}
+          </span>
+          <div className="admin-actions">
+            <button onClick={exportarDatos} className="btn-export">
+              📥 Exportar Datos
+            </button>
+            <button onClick={limpiarDatos} className="btn-clear">
+              🗑️ Limpiar Todo
+            </button>
+            <button onClick={handleLogout} className="btn-logout">
+              🚪 Salir
+            </button>
+          </div>
         </div>
       </div>
 

@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
+import { useAuth } from '../../context/AuthContext'
 import { useState } from 'react'
 
 function Navbar() {
   const { totalItems } = useCart()
+  const { user, logout, isAuthenticated } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
 
   const handleSearch = (e) => {
@@ -63,6 +65,94 @@ function Navbar() {
             </Link>
           </div>
         </li>
+        
+        {/* Opciones de autenticación */}
+        {isAuthenticated() ? (
+          <>
+            <li>
+              <Link to="/profile" style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                textDecoration: 'none',
+                color: 'darkblue',
+                fontWeight: '600',
+                padding: '12px 15px',
+                transition: 'color 0.3s, transform 0.2s'
+              }}>
+                <span style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: '#8a2be2',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}>
+                  {user?.avatar}
+                </span>
+                {user?.name}
+              </Link>
+            </li>
+            <li>
+              <button
+                onClick={() => {
+                  if (confirm('¿Estás seguro de que querés cerrar sesión?')) {
+                    logout()
+                  }
+                }}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  color: 'darkblue',
+                  fontWeight: '600',
+                  padding: '12px 15px',
+                  cursor: 'pointer',
+                  transition: 'color 0.3s, transform 0.2s',
+                  fontSize: '16px'
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.color = 'violet'
+                  e.target.style.transform = 'scale(1.05)'
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.color = 'darkblue'
+                  e.target.style.transform = 'scale(1)'
+                }}
+              >
+                🚪 Salir
+              </button>
+            </li>
+          </>
+        ) : (
+          <>
+            <li>
+              <Link to="/login" style={{
+                textDecoration: 'none',
+                color: 'darkblue',
+                fontWeight: '600',
+                padding: '12px 15px',
+                transition: 'color 0.3s, transform 0.2s'
+              }}>
+                🔐 Iniciar Sesión
+              </Link>
+            </li>
+            <li>
+              <Link to="/register" style={{
+                textDecoration: 'none',
+                color: 'darkblue',
+                fontWeight: '600',
+                padding: '12px 15px',
+                transition: 'color 0.3s, transform 0.2s'
+              }}>
+                📝 Registrarse
+              </Link>
+            </li>
+          </>
+        )}
       </ul>
     </nav>
   )
