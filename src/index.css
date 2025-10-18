@@ -429,7 +429,9 @@ footer hr {
 
 @media (max-width: 768px) {
     .footer-content {
-        gap: 10px;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .separator {
@@ -439,7 +441,18 @@ footer hr {
     .footer-text,
     .footer-link,
     .social-links {
-        margin: 5px 0;
+        margin: 3px 0;
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+    
+    .footer-text {
+        font-size: 11px !important;
+    }
+    
+    .footer-link {
+        font-size: 11px !important;
+        padding: 2px 4px !important;
     }
 }
 
@@ -862,14 +875,60 @@ body {
     }
     
     nav .menu {
-        padding: 10px 0 !important;
+        padding: 15px 10px !important;
         transform: none !important;
+        gap: 8px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
     }
     
     nav .menu > li > a {
-        padding: 8px 10px !important;
-        font-size: 16px !important;
+        padding: 10px 8px !important;
+        font-size: 12px !important;
+        font-weight: 600 !important;
+        min-height: 40px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
         transform: none !important;
+    }
+    
+    /* Submenús en móvil - hacer funcionales */
+    nav .menu > li {
+        position: relative !important;
+    }
+    
+    nav .submenu {
+        position: static !important;
+        display: none !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-radius: 8px !important;
+        margin-top: 5px !important;
+        padding: 10px !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    nav .menu > li:hover .submenu {
+        display: block !important;
+    }
+    
+    nav .submenu li a {
+        color: #8a2be2 !important;
+        font-size: 11px !important;
+        padding: 8px 12px !important;
+        border-radius: 6px !important;
+        margin: 2px 0 !important;
+        background: rgba(138, 43, 226, 0.1) !important;
+    }
+    
+    nav .submenu li a:hover {
+        background: rgba(138, 43, 226, 0.2) !important;
+        color: #7b1fa2 !important;
     }
     
     /* Sobreescribir cualquier selector que aplique animaciones */
