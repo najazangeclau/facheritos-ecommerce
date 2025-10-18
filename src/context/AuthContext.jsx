@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react'
+import { usersService } from '../services/firebaseService'
 
 const AuthContext = createContext()
 
@@ -16,22 +17,6 @@ export const AuthProvider = ({ children }) => {
 
   // Cargar usuario desde localStorage al iniciar
   useEffect(() => {
-    // Crear usuario admin por defecto si no existe
-    const users = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
-    if (!users.find(u => u.email === 'admin@facheritos.com')) {
-      const adminUser = {
-        id: 'admin-001',
-        name: 'Administrador',
-        email: 'admin@facheritos.com',
-        password: 'admin123',
-        role: 'admin',
-        avatar: 'A',
-        createdAt: new Date().toISOString()
-      }
-      users.push(adminUser)
-      localStorage.setItem('facheritos_users', JSON.stringify(users))
-    }
-
     const savedUser = localStorage.getItem('facheritos_user')
     if (savedUser) {
       try {

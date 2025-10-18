@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { useCart } from '../context/CartContext'
+import { purchasesService } from '../services/firebaseService'
 
 function UserProfile() {
   const { user, logout } = useAuth()
@@ -9,9 +10,32 @@ function UserProfile() {
   const [activeTab, setActiveTab] = useState('profile')
 
   useEffect(() => {
-    // Cargar historial de compras desde localStorage
-    const history = JSON.parse(localStorage.getItem(`purchase_history_${user?.id}`) || '[]')
-    setPurchaseHistory(history)
+    // Cargar historial de compras
+    const loadPurchaseHistory = async () => {
+      if (user?.id) {
+        try {
+          // Intentar cargar desde Firebase primero
+          const result = await purchasesService.getPurchasesByUser(user.id)
+          if (result.success && result.purchases.length > 0) {
+            setPurchaseHistory(result.purchases)
+            console.log('✅ Historial cargado desde Firebase:', result.purchases)
+          } else {
+            // Fallback a localStorage
+            const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
+            setPurchaseHistory(history)
+            console.log('✅ Historial cargado desde localStorage:', history)
+          }
+        } catch (error) {
+          console.error('❌ Error cargando historial:', error)
+          // Fallback a localStorage
+          const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
+          setPurchaseHistory(history)
+          console.log('✅ Historial cargado desde localStorage (fallback):', history)
+        }
+      }
+    }
+    
+    loadPurchaseHistory()
   }, [user])
 
   const handleLogout = () => {
@@ -19,6 +43,35 @@ function UserProfile() {
       logout()
     }
   }
+
+  // Función para refrescar el historial
+  const refreshHistory = () => {
+    if (user?.id) {
+      console.log('🔄 Refrescando historial para usuario:', user.id)
+      const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
+      setPurchaseHistory(history)
+      console.log('🔄 Historial refrescado:', history)
+      console.log('📊 Total de compras en historial:', history.length)
+    } else {
+      console.log('⚠️ No hay usuario logueado para refrescar historial')
+    }
+  }
+
+  // Escuchar cambios en localStorage para actualizar el historial
+  useEffect(() => {
+    const handleStorageChange = () => {
+      refreshHistory()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    // También refrescar cuando se vuelve a la pestaña
+    window.addEventListener('focus', handleStorageChange)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('focus', handleStorageChange)
+    }
+  }, [user])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-AR', {
@@ -35,13 +88,18 @@ function UserProfile() {
       minHeight: '80vh',
       padding: '20px',
       maxWidth: '1200px',
-      margin: '0 auto'
+      margin: '0 auto',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start'
     }}>
       <div style={{
         background: 'white',
         borderRadius: '15px',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        width: '100%',
+        maxWidth: '800px'
       }}>
         {/* Header del perfil */}
         <div style={{
@@ -94,22 +152,6 @@ function UserProfile() {
             👤 Mi Perfil
           </button>
           <button
-            onClick={() => setActiveTab('cart')}
-            style={{
-              flex: 1,
-              padding: '15px',
-              border: 'none',
-              background: activeTab === 'cart' ? '#8a2be2' : 'transparent',
-              color: activeTab === 'cart' ? 'white' : '#666',
-              cursor: 'pointer',
-              fontSize: '16px',
-              fontWeight: '600',
-              transition: 'all 0.3s ease'
-            }}
-          >
-            🛒 Carrito Actual ({items.length})
-          </button>
-          <button
             onClick={() => setActiveTab('history')}
             style={{
               flex: 1,
@@ -123,153 +165,191 @@ function UserProfile() {
               transition: 'all 0.3s ease'
             }}
           >
-            📦 Historial
+            📦 Historial de Compras
           </button>
         </div>
 
         {/* Contenido de las tabs */}
         <div style={{ padding: '30px' }}>
           {activeTab === 'profile' && (
-            <div>
-              <h2 style={{ color: '#333', marginBottom: '20px' }}>
+            <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+              <h2 style={{ 
+                color: '#333', 
+                marginBottom: '30px',
+                textAlign: 'center',
+                fontSize: '24px',
+                fontWeight: 'bold'
+              }}>
                 📋 Información del Perfil
               </h2>
+              
               <div style={{
-                background: '#f8f9fa',
-                padding: '20px',
-                borderRadius: '10px',
-                marginBottom: '20px'
+                background: 'linear-gradient(135deg, #f8f9fa, #e9ecef)',
+                padding: '30px',
+                borderRadius: '15px',
+                marginBottom: '30px',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
+                border: '1px solid #dee2e6'
               }}>
-                <div style={{ marginBottom: '15px' }}>
-                  <strong>👤 Nombre:</strong> {user?.name}
+                <div style={{ 
+                  marginBottom: '20px',
+                  padding: '15px',
+                  background: 'white',
+                  borderRadius: '10px',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <strong style={{ color: '#8a2be2', fontSize: '16px' }}>👤 Nombre:</strong>
+                  <p style={{ margin: '5px 0 0 0', fontSize: '18px', color: '#333' }}>{user?.name}</p>
                 </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <strong>📧 Email:</strong> {user?.email}
+                
+                <div style={{ 
+                  marginBottom: '20px',
+                  padding: '15px',
+                  background: 'white',
+                  borderRadius: '10px',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <strong style={{ color: '#8a2be2', fontSize: '16px' }}>📧 Email:</strong>
+                  <p style={{ margin: '5px 0 0 0', fontSize: '18px', color: '#333' }}>{user?.email}</p>
                 </div>
-                <div style={{ marginBottom: '15px' }}>
-                  <strong>🎭 Rol:</strong> {user?.role === 'admin' ? 'Administrador' : 'Usuario'}
+                
+                <div style={{ 
+                  marginBottom: '20px',
+                  padding: '15px',
+                  background: 'white',
+                  borderRadius: '10px',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <strong style={{ color: '#8a2be2', fontSize: '16px' }}>🎭 Rol:</strong>
+                  <p style={{ margin: '5px 0 0 0', fontSize: '18px', color: '#333' }}>
+                    {user?.role === 'admin' ? '👑 Administrador' : '👤 Usuario'}
+                  </p>
                 </div>
-                <div>
-                  <strong>📅 Miembro desde:</strong> {formatDate(user?.createdAt || new Date())}
+                
+                <div style={{ 
+                  padding: '15px',
+                  background: 'white',
+                  borderRadius: '10px',
+                  border: '1px solid #e9ecef'
+                }}>
+                  <strong style={{ color: '#8a2be2', fontSize: '16px' }}>📅 Miembro desde:</strong>
+                  <p style={{ margin: '5px 0 0 0', fontSize: '18px', color: '#333' }}>
+                    {formatDate(user?.createdAt || new Date())}
+                  </p>
                 </div>
               </div>
               
-              <button
-                onClick={handleLogout}
-                style={{
-                  padding: '12px 24px',
-                  backgroundColor: '#dc3545',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#c82333'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#dc3545'}
-              >
-                🚪 Cerrar Sesión
-              </button>
+              <div style={{ textAlign: 'center' }}>
+                <button
+                  onClick={handleLogout}
+                  style={{
+                    padding: '15px 30px',
+                    backgroundColor: '#dc3545',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '10px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 15px rgba(220, 53, 69, 0.3)'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = '#c82333'
+                    e.target.style.transform = 'translateY(-2px)'
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = '#dc3545'
+                    e.target.style.transform = 'translateY(0)'
+                  }}
+                >
+                  🚪 Cerrar Sesión
+                </button>
+              </div>
             </div>
           )}
 
-          {activeTab === 'cart' && (
-            <div>
-              <h2 style={{ color: '#333', marginBottom: '20px' }}>
-                🛒 Carrito Actual
-              </h2>
-              {items.length > 0 ? (
-                <div>
-                  <div style={{
-                    background: '#f8f9fa',
-                    padding: '20px',
-                    borderRadius: '10px',
-                    marginBottom: '20px'
-                  }}>
-                    <div style={{ marginBottom: '10px' }}>
-                      <strong>📦 Productos en el carrito:</strong> {items.length}
-                    </div>
-                    <div style={{ marginBottom: '10px' }}>
-                      <strong>💰 Total:</strong> ${totalPrice}
-                    </div>
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      onClick={() => window.location.href = '/carrito'}
-                      style={{
-                        padding: '12px 24px',
-                        backgroundColor: '#8a2be2',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      🛒 Ver Carrito
-                    </button>
-                    <button
-                      onClick={() => {
-                        if (confirm('¿Estás seguro de que querés vaciar el carrito?')) {
-                          clear()
-                        }
-                      }}
-                      style={{
-                        padding: '12px 24px',
-                        backgroundColor: '#6c757d',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '8px',
-                        cursor: 'pointer',
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        transition: 'all 0.3s ease'
-                      }}
-                    >
-                      🗑️ Vaciar Carrito
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div style={{
-                  textAlign: 'center',
-                  padding: '40px',
-                  color: '#666'
-                }}>
-                  <div style={{ fontSize: '48px', marginBottom: '20px' }}>🛒</div>
-                  <h3>Tu carrito está vacío</h3>
-                  <p>¡Agregá algunos productos para comenzar a comprar!</p>
-                  <button
-                    onClick={() => window.location.href = '/productos'}
-                    style={{
-                      padding: '12px 24px',
-                      backgroundColor: '#8a2be2',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      marginTop: '15px'
-                    }}
-                  >
-                    🛍️ Ir a Productos
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
 
           {activeTab === 'history' && (
             <div>
-              <h2 style={{ color: '#333', marginBottom: '20px' }}>
-                📦 Historial de Compras
-              </h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 style={{ color: '#333', margin: 0 }}>
+                  📦 Historial de Compras
+                </h2>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={refreshHistory}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#8a2be2',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    🔄 Actualizar
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Limpiar historial corrupto
+                      localStorage.removeItem(`purchase_history_${user?.id}`)
+                      setPurchaseHistory([])
+                      console.log('🧹 Historial limpiado')
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    🧹 Limpiar
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Crear una compra de prueba con estructura correcta
+                      const testPurchase = {
+                        id: Date.now().toString(),
+                        nombre: 'Test Product',
+                        email: user?.email,
+                        total: 1000,
+                        date: new Date().toISOString(),
+                        userId: user?.id,
+                        items: [
+                          { nombre: 'Producto Test', precio: 1000, cantidad: 1 }
+                        ],
+                        carrito: [
+                          { nombre: 'Producto Test', precio: 1000, cantidad: 1 }
+                        ]
+                      }
+                      const history = JSON.parse(localStorage.getItem(`purchase_history_${user?.id}`) || '[]')
+                      history.push(testPurchase)
+                      localStorage.setItem(`purchase_history_${user?.id}`, JSON.stringify(history))
+                      console.log('🧪 Compra de prueba creada:', testPurchase)
+                      refreshHistory()
+                    }}
+                    style={{
+                      padding: '8px 16px',
+                      backgroundColor: '#28a745',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '600'
+                    }}
+                  >
+                    🧪 Test
+                  </button>
+                </div>
+              </div>
               {purchaseHistory.length > 0 ? (
                 <div>
                   {purchaseHistory.map((purchase, index) => (
@@ -290,7 +370,7 @@ function UserProfile() {
                         <strong>💰 Total:</strong> ${purchase.total}
                       </div>
                       <div style={{ marginBottom: '10px' }}>
-                        <strong>📦 Productos:</strong> {purchase.items.length}
+                        <strong>📦 Productos:</strong> {purchase.items?.length || purchase.carrito?.length || 0}
                       </div>
                       <div>
                         <strong>📧 Email:</strong> {purchase.email}

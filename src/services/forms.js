@@ -31,8 +31,8 @@ export const contactosService = {
 // ===== SERVICIO DE COMPRAS =====
 export const comprasService = {
   // Enviar formulario de compra (localStorage)
-  async enviarCompra(formData, carrito, total) {
-    return await comprasLocalService.enviarCompra(formData, carrito, total)
+  async enviarCompra(formData, carrito, total, userId = null) {
+    return await comprasLocalService.enviarCompra(formData, carrito, total, userId)
   },
 
   // Obtener todas las compras (para admin)

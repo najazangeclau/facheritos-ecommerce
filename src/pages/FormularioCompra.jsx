@@ -1,11 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { comprasService, formUtils } from '../services/forms'
 import { formspreeService } from '../services/formspreeService'
 
 function FormularioCompra() {
-  const { items, totalPrice, clear } = useCart()
+  const { items, itemsWithPromo, totalPrice, clear } = useCart()
+  const { user, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [showSuccess, setShowSuccess] = useState(false)
   
@@ -17,13 +19,26 @@ function FormularioCompra() {
     direccion: '',
     ciudad: '',
     codigoPostal: '',
-    metodoPago: 'tarjeta',
+    metodoPago: 'transferencia',
     numeroTarjeta: '',
     vencimiento: '',
     cvv: '',
     nombreTitular: '',
     comentarios: ''
   })
+
+  // Pre-llenar formulario con datos del usuario si está logueado
+  useEffect(() => {
+    if (isAuthenticated() && user) {
+      setFormData(prev => ({
+        ...prev,
+        nombre: user.name.split(' ')[0] || '',
+        apellido: user.name.split(' ').slice(1).join(' ') || '',
+        email: user.email || '',
+        nombreTitular: user.name || ''
+      }))
+    }
+  }, [user, isAuthenticated])
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -53,13 +68,14 @@ function FormularioCompra() {
     }
 
     // Enviar compra a Formspree
-    const resultado = await formspreeService.enviarCompra(formData, items, totalPrice)
+    const resultado = await formspreeService.enviarCompra(formData, itemsWithPromo, totalPrice)
     
     if (resultado.success) {
       formUtils.mostrarNotificacion(resultado.message, 'success')
       
       // También guardar localmente como backup
-      await comprasService.enviarCompra(formData, items, totalPrice)
+      console.log('💾 Guardando compra para usuario:', user?.id)
+      await comprasService.enviarCompra(formData, itemsWithPromo, totalPrice, user?.id)
       
       // Mostrar cartel de confirmación
       setShowSuccess(true)
@@ -78,7 +94,7 @@ function FormularioCompra() {
     navigate('/carrito')
   }
 
-  if (items.length === 0) {
+  if (itemsWithPromo.length === 0) {
     return (
       <main>
         <div className="formulario-container">
@@ -101,13 +117,13 @@ function FormularioCompra() {
         <div className="resumen-pedido">
           <h2>Resumen de tu pedido</h2>
           <div className="items-resumen">
-            {items.map((item) => (
+            {itemsWithPromo.map((item) => (
               <div key={item.key} className="item-resumen">
                 <span>{item.nombre}</span>
                 <span>Talle: {item.talle} | Color: {item.color}</span>
-                <span>Cantidad: {item.quantity}</span>
-                <span className="precio-item">
-                  {item.esGratis ? 'GRATIS' : `$${item.precio * item.quantity}`}
+                <span>Cantidad: 1</span>
+                <span className={`precio-item ${item.esGratis ? 'gratis' : 'pago'}`}>
+                  {item.esGratis ? 'GRATIS' : `$${item.precio}`}
                 </span>
               </div>
             ))}
@@ -212,63 +228,11 @@ function FormularioCompra() {
                 value={formData.metodoPago}
                 onChange={handleInputChange}
               >
-                <option value="tarjeta">Tarjeta de Crédito/Débito</option>
                 <option value="transferencia">Transferencia Bancaria</option>
                 <option value="efectivo">Efectivo (Contra entrega)</option>
               </select>
             </div>
 
-            {formData.metodoPago === 'tarjeta' && (
-              <>
-                <div className="form-group">
-                  <label>Número de Tarjeta</label>
-                  <input
-                    type="text"
-                    name="numeroTarjeta"
-                    value={formData.numeroTarjeta}
-                    onChange={handleInputChange}
-                    placeholder="1234 5678 9012 3456"
-                    maxLength="19"
-                  />
-                </div>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Vencimiento</label>
-                    <input
-                      type="text"
-                      name="vencimiento"
-                      value={formData.vencimiento}
-                      onChange={handleInputChange}
-                      placeholder="MM/AA"
-                      maxLength="5"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>CVV</label>
-                    <input
-                      type="text"
-                      name="cvv"
-                      value={formData.cvv}
-                      onChange={handleInputChange}
-                      placeholder="123"
-                      maxLength="4"
-                    />
-                  </div>
-                </div>
-
-                <div className="form-group">
-                  <label>Nombre del Titular</label>
-                  <input
-                    type="text"
-                    name="nombreTitular"
-                    value={formData.nombreTitular}
-                    onChange={handleInputChange}
-                    placeholder="Como aparece en la tarjeta"
-                  />
-                </div>
-              </>
-            )}
           </div>
 
           <div className="seccion-formulario">

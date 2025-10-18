@@ -44,7 +44,7 @@ function Liquidaciones() {
       },
       {
         id: 3,
-        nombre: "Lentes de Sol",
+        nombre: "Anteojo",
         precio: 3000, // 60% descuento de $7,500
         precioOriginal: 7500,
         imagen: "/img/accesorios/anteojo.png",

@@ -55,13 +55,14 @@ export const contactosLocalService = {
 // ===== SERVICIO DE COMPRAS =====
 export const comprasLocalService = {
   // Enviar formulario de compra
-  async enviarCompra(formData, carrito, total) {
+  async enviarCompra(formData, carrito, total, userId = null) {
     try {
       const compra = {
         id: Date.now().toString(),
         ...formData,
         carrito: carrito,
         total: total,
+        userId: userId, // Agregar ID del usuario
         date: new Date().toISOString()
       }
 
@@ -73,6 +74,17 @@ export const comprasLocalService = {
       
       // Guardar en localStorage
       localStorage.setItem('facheritos_compras', JSON.stringify(compras))
+      
+      // Si hay usuario logueado, también guardar en su historial personal
+      if (userId) {
+        const userHistory = JSON.parse(localStorage.getItem(`purchase_history_${userId}`) || '[]')
+        userHistory.push(compra)
+        localStorage.setItem(`purchase_history_${userId}`, JSON.stringify(userHistory))
+        console.log('✅ Compra guardada en historial del usuario:', userId, compra)
+        console.log('📦 Historial actualizado:', userHistory)
+      } else {
+        console.log('⚠️ No hay userId, no se guarda en historial personal')
+      }
       
       console.log('✅ Compra guardada localmente:', compra)
       return { success: true, data: compra }

@@ -57,39 +57,37 @@ function Navbar() {
             </button>
           </form>
         </li>
-        <li style={{marginLeft: '10px'}}>
-          <div className="carrito-header">
-            <Link to="/carrito" className="carrito-link" style={{
-              display: 'flex',
+        <li>
+          <Link to="/carrito" style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            textDecoration: 'none',
+            color: 'darkblue',
+            fontWeight: '600',
+            padding: '12px 15px',
+            transition: 'color 0.3s, transform 0.2s',
+            fontSize: '16px',
+            whiteSpace: 'nowrap'
+          }}>
+            <span style={{ fontSize: '16px' }}>🛒</span>
+            <span style={{
+              background: '#8a2be2',
+              color: 'white',
+              borderRadius: '50%',
+              width: '18px',
+              height: '18px',
+              display: 'inline-flex',
               alignItems: 'center',
-              gap: '4px',
-              textDecoration: 'none',
-              color: 'darkblue',
-              fontWeight: '600',
-              padding: '8px 4px',
-              transition: 'color 0.3s, transform 0.2s',
-              fontSize: '10px',
-              minHeight: '36px',
               justifyContent: 'center',
-              width: '100%'
+              fontSize: '11px',
+              fontWeight: 'bold',
+              minWidth: '18px',
+              marginLeft: '4px'
             }}>
-              <span>🛒</span>
-              <span id="contador-carrito" className="contador-carrito" style={{
-                background: '#8a2be2',
-                color: 'white',
-                borderRadius: '50%',
-                width: '18px',
-                height: '18px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '9px',
-                fontWeight: 'bold'
-              }}>
-                {totalItems}
-              </span>
-            </Link>
-          </div>
+              {totalItems}
+            </span>
+          </Link>
         </li>
         
         {/* Opciones de autenticación */}
@@ -99,56 +97,34 @@ function Navbar() {
               <Link to="/profile" style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
                 textDecoration: 'none',
                 color: 'darkblue',
                 fontWeight: '600',
-                padding: '8px 4px',
+                padding: '12px 15px',
                 transition: 'color 0.3s, transform 0.2s',
-                fontSize: '10px',
-                minHeight: '36px',
-                justifyContent: 'center'
+                fontSize: '16px',
+                whiteSpace: 'nowrap'
               }}>
-                <span style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '50%',
-                  background: '#8a2be2',
-                  color: 'white',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '10px',
-                  fontWeight: 'bold'
-                }}>
-                  {user?.avatar}
-                </span>
-                <span style={{ display: window.innerWidth > 480 ? 'inline' : 'none' }}>
-                  {user?.name}
-                </span>
+                {user?.name}
               </Link>
             </li>
             <li>
-              <button
-                onClick={() => {
+              <a
+                onClick={(e) => {
+                  e.preventDefault()
                   if (confirm('¿Estás seguro de que querés cerrar sesión?')) {
                     logout()
                   }
                 }}
                 style={{
-                  background: 'none',
-                  border: 'none',
+                  display: 'block',
+                  padding: '12px 15px',
+                  textDecoration: 'none',
                   color: 'darkblue',
                   fontWeight: '600',
-                  padding: '8px 4px',
-                  cursor: 'pointer',
                   transition: 'color 0.3s, transform 0.2s',
-                  fontSize: '10px',
-                  minHeight: '36px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%'
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap'
                 }}
                 onMouseOver={(e) => {
                   e.target.style.color = 'violet'
@@ -160,7 +136,7 @@ function Navbar() {
                 }}
               >
                 🚪 Salir
-              </button>
+              </a>
             </li>
           </>
         ) : (
@@ -179,7 +155,7 @@ function Navbar() {
                 justifyContent: 'center',
                 width: '100%'
               }}>
-                🔐 Login
+                <span style={{ fontSize: '14px' }}>🔐</span> Login
               </Link>
             </li>
             <li>
@@ -196,7 +172,7 @@ function Navbar() {
                 justifyContent: 'center',
                 width: '100%'
               }}>
-                📝 Registro
+                <span style={{ fontSize: '14px' }}>📝</span> Registro
               </Link>
             </li>
           </>

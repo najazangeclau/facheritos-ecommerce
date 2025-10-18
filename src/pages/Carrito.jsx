@@ -1,4 +1,5 @@
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
@@ -7,6 +8,7 @@ const PRODUCTOS_2X1_NAMES = ['Bermuda Jean', 'Pantalón Cargo', 'Pollera Recta',
 
 function Carrito() {
   const { items, itemsWithPromo, removeItem, updateQuantity, updateTalle, updateColor, totalItems, totalPrice, clear } = useCart()
+  const { isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
   const [forceUpdate, setForceUpdate] = useState(0)
   
@@ -148,6 +150,11 @@ function Carrito() {
   }
 
   const handlePagar = () => {
+    if (!isAuthenticated()) {
+      alert('Debes iniciar sesión para continuar con la compra')
+      navigate('/login')
+      return
+    }
     navigate('/formulario-compra')
   }
 
@@ -264,6 +271,16 @@ function Carrito() {
                                 }}
                                 className="quantity-input"
                                 disabled={item.esGratis}
+                                style={{
+                                  width: '60px',
+                                  textAlign: 'center',
+                                  fontSize: '16px',
+                                  padding: '8px',
+                                  border: '2px solid #8a2be2',
+                                  borderRadius: '6px',
+                                  fontWeight: 'bold',
+                                  color: '#8a2be2'
+                                }}
                               />
                               <button 
                                 className="quantity-btn"

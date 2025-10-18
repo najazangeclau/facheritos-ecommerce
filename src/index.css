@@ -116,31 +116,34 @@ nav {
     left: 50% !important;
     transform: translateX(-50%) !important;
     min-width: 180px !important;
-    padding: 0 !important;
+    padding: 8px !important;
     margin: 0 !important;
     display: none !important;
-    background-color: rgba(255, 255, 255, 0.95) !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    background: linear-gradient(135deg, #8a2be2, #e07bb7) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 8px 25px rgba(138, 43, 226, 0.3) !important;
     z-index: 1000 !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
   }
   
   .submenu li a {
     display: block !important;
     padding: 12px 15px !important;
-    color: #333 !important;
+    color: white !important;
     text-decoration: none !important;
-    background-color: transparent !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
     transition: all 0.3s ease !important;
     white-space: nowrap !important;
     font-size: 14px !important;
-    border-radius: 4px !important;
-    margin: 2px !important;
+    border-radius: 8px !important;
+    margin: 2px 0 !important;
+    font-weight: 500 !important;
   }
   
   .submenu li a:hover {
-    color: #8a2be2 !important;
-    background-color: rgba(138, 43, 226, 0.1) !important;
+    color: white !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    transform: translateX(5px) !important;
   }
   
   .menu li:hover .submenu {
@@ -541,6 +544,22 @@ main > p {
     .galeria {
         gap: 20px;
         padding: 15px;
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+    }
+    
+    .galeria-2x1 {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+        gap: 20px;
+    }
+    
+    .whatsapp-features {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+        gap: 20px;
+    }
+    
+    .ubicacion-info-cards {
+        grid-template-columns: repeat(2, 1fr); /* 2 columnas en tablets */
+        gap: 20px;
     }
 
     .producto {
@@ -565,6 +584,28 @@ main > p {
 @media (max-width: 480px) {
     .producto {
         flex: 0 1 100%;
+    }
+    
+    /* Grids responsivos para móviles pequeños */
+    .galeria {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .galeria-2x1 {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .whatsapp-features {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .ubicacion-info-cards {
+        grid-template-columns: 1fr;
+        gap: 15px;
     }
 }
 
@@ -770,30 +811,29 @@ body {
     }
 
 
-    @media screen and (min-width: 768px) {
-        @media screen and (min-height: 100px) {
-            body:not(:hover) header:not(:hover) .logo-container img,
-            body:hover header:not(:hover) .logo-container img {
-                width: 12%;
-                max-width: 12%;
-            }
+    /* Media query corregida - sin anidación */
+    @media screen and (min-width: 768px) and (min-height: 100px) {
+        body:not(:hover) header:not(:hover) .logo-container img,
+        body:hover header:not(:hover) .logo-container img {
+            width: 12%;
+            max-width: 12%;
+        }
 
-            body:not(:hover) header:not(:hover) .logo-container .subtitulo-logo,
-            body:hover header:not(:hover) .logo-container .subtitulo-logo {
-                font-size: 0.8em;
-                margin: 5px 0;
-            }
+        body:not(:hover) header:not(:hover) .logo-container .subtitulo-logo,
+        body:hover header:not(:hover) .logo-container .subtitulo-logo {
+            font-size: 0.8em;
+            margin: 5px 0;
+        }
 
-            body:not(:hover) header:not(:hover) nav .menu,
-            body:hover header:not(:hover) nav .menu {
-                padding: 5px 0;
-            }
+        body:not(:hover) header:not(:hover) nav .menu,
+        body:hover header:not(:hover) nav .menu {
+            padding: 5px 0;
+        }
 
-            body:not(:hover) header:not(:hover) nav .menu > li > a,
-            body:hover header:not(:hover) nav .menu > li > a {
-                padding: 5px 10px;
-                font-size: 0.9em;
-            }
+        body:not(:hover) header:not(:hover) nav .menu > li > a,
+        body:hover header:not(:hover) nav .menu > li > a {
+            padding: 5px 10px;
+            font-size: 0.9em;
         }
     }
 }
@@ -3412,8 +3452,7 @@ p {
 }
 
 .results-info {
-  font-size: 16px;
-  color: #e07bb7;
+  font-size: 16px;  color: #e07bb7;
   font-weight: 600;
   text-align: center;
         padding: 10px;
@@ -3775,7 +3814,6 @@ p {
     font-weight: 600 !important;
     color: #e07bb7 !important;
     }
-}
 }
 
 /* Estilos para grupos 2x1 en carrito */
@@ -4467,6 +4505,23 @@ p {
     transform: translateX(0);
     opacity: 1;
   }
+}
+
+/* ===== ESTILOS PARA FORMULARIO DE COMPRA ===== */
+.precio-item.gratis {
+  color: #28a745 !important;
+  font-weight: bold !important;
+  background: rgba(40, 167, 69, 0.1) !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+}
+
+.precio-item.pago {
+  color: #8a2be2 !important;
+  font-weight: bold !important;
+  background: rgba(138, 43, 226, 0.1) !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
 }
 
 /* ===== DISEÑO MÓVIL COMO PC (VERTICAL) ===== */
@@ -5261,19 +5316,5 @@ p {
   .admin-login button:hover {
     background: #7b1fa2;
     transform: translateY(-1px);
-  }
-    max-width: 45px;
-  }
-  
-  .quantity-btn {
-    width: 16px;
-    height: 16px;
-    font-size: 8px;
-  }
-  
-  .quantity-input {
-    width: 22px;
-    height: 16px;
-    font-size: 8px;
   }
 }
