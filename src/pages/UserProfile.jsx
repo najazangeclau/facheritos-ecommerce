@@ -289,6 +289,51 @@ function UserProfile() {
                       <div style={{ marginBottom: '10px' }}>
                         <strong>📦 Productos:</strong> {purchase.items?.length || purchase.carrito?.length || 0}
                       </div>
+                      
+                      {/* Detalle de productos comprados */}
+                      {(purchase.items || purchase.carrito) && (
+                        <div style={{ marginBottom: '15px' }}>
+                          <strong>🛍️ Detalle de la compra:</strong>
+                          <div style={{ 
+                            marginTop: '8px', 
+                            padding: '10px', 
+                            background: 'white', 
+                            borderRadius: '6px',
+                            border: '1px solid #dee2e6'
+                          }}>
+                            {(purchase.items || purchase.carrito).map((item, itemIndex) => (
+                              <div key={itemIndex} style={{ 
+                                display: 'flex', 
+                                justifyContent: 'space-between', 
+                                alignItems: 'center',
+                                padding: '5px 0',
+                                borderBottom: itemIndex < (purchase.items || purchase.carrito).length - 1 ? '1px solid #f1f3f4' : 'none'
+                              }}>
+                                <div>
+                                  <strong>{item.nombre}</strong>
+                                  {item.talle && <span style={{ color: '#666', marginLeft: '8px' }}>Talle: {item.talle}</span>}
+                                  {item.color && <span style={{ color: '#666', marginLeft: '8px' }}>Color: {item.color}</span>}
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                  <div style={{ fontWeight: '600', color: '#8a2be2' }}>
+                                    {item.esGratis ? 'GRATIS' : `$${item.precio}`}
+                                  </div>
+                                  {item.precioOriginal && item.precioOriginal !== item.precio && (
+                                    <div style={{ 
+                                      fontSize: '12px', 
+                                      color: '#666', 
+                                      textDecoration: 'line-through' 
+                                    }}>
+                                      ${item.precioOriginal}
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      
                       <div>
                         <strong>📧 Email:</strong> {purchase.email}
                       </div>
