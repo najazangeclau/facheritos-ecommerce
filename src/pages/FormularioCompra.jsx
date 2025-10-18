@@ -74,7 +74,6 @@ function FormularioCompra() {
       formUtils.mostrarNotificacion(resultado.message, 'success')
       
       // También guardar localmente como backup
-      console.log('💾 Guardando compra para usuario:', user?.id)
       await comprasService.enviarCompra(formData, itemsWithPromo, totalPrice, user?.id)
       
       // Mostrar cartel de confirmación

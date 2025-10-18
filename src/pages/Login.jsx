@@ -197,18 +197,6 @@ function Login() {
           </Link>
         </div>
 
-        <div style={{
-          marginTop: '30px',
-          padding: '15px',
-          background: '#f8f9fa',
-          borderRadius: '8px',
-          fontSize: '14px',
-          color: '#666'
-        }}>
-          <strong>👤 Usuario de prueba:</strong><br />
-          Email: admin@facheritos.com<br />
-          Contraseña: admin123
-        </div>
       </div>
     </main>
   )

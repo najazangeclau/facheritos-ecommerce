@@ -80,10 +80,6 @@ export const comprasLocalService = {
         const userHistory = JSON.parse(localStorage.getItem(`purchase_history_${userId}`) || '[]')
         userHistory.push(compra)
         localStorage.setItem(`purchase_history_${userId}`, JSON.stringify(userHistory))
-        console.log('✅ Compra guardada en historial del usuario:', userId, compra)
-        console.log('📦 Historial actualizado:', userHistory)
-      } else {
-        console.log('⚠️ No hay userId, no se guarda en historial personal')
       }
       
       console.log('✅ Compra guardada localmente:', compra)

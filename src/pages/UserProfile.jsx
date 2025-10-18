@@ -10,32 +10,11 @@ function UserProfile() {
   const [activeTab, setActiveTab] = useState('profile')
 
   useEffect(() => {
-    // Cargar historial de compras
-    const loadPurchaseHistory = async () => {
-      if (user?.id) {
-        try {
-          // Intentar cargar desde Firebase primero
-          const result = await purchasesService.getPurchasesByUser(user.id)
-          if (result.success && result.purchases.length > 0) {
-            setPurchaseHistory(result.purchases)
-            console.log('✅ Historial cargado desde Firebase:', result.purchases)
-          } else {
-            // Fallback a localStorage
-            const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
-            setPurchaseHistory(history)
-            console.log('✅ Historial cargado desde localStorage:', history)
-          }
-        } catch (error) {
-          console.error('❌ Error cargando historial:', error)
-          // Fallback a localStorage
-          const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
-          setPurchaseHistory(history)
-          console.log('✅ Historial cargado desde localStorage (fallback):', history)
-        }
-      }
+    if (user?.id) {
+      // Cargar historial desde localStorage
+      const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
+      setPurchaseHistory(history)
     }
-    
-    loadPurchaseHistory()
   }, [user])
 
   const handleLogout = () => {
@@ -47,13 +26,9 @@ function UserProfile() {
   // Función para refrescar el historial
   const refreshHistory = () => {
     if (user?.id) {
-      console.log('🔄 Refrescando historial para usuario:', user.id)
+      // Cargar desde localStorage directamente
       const history = JSON.parse(localStorage.getItem(`purchase_history_${user.id}`) || '[]')
       setPurchaseHistory(history)
-      console.log('🔄 Historial refrescado:', history)
-      console.log('📊 Total de compras en historial:', history.length)
-    } else {
-      console.log('⚠️ No hay usuario logueado para refrescar historial')
     }
   }
 
@@ -276,79 +251,21 @@ function UserProfile() {
                 <h2 style={{ color: '#333', margin: 0 }}>
                   📦 Historial de Compras
                 </h2>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    onClick={refreshHistory}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#8a2be2',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '600'
-                    }}
-                  >
-                    🔄 Actualizar
-                  </button>
-                  <button
-                    onClick={() => {
-                      // Limpiar historial corrupto
-                      localStorage.removeItem(`purchase_history_${user?.id}`)
-                      setPurchaseHistory([])
-                      console.log('🧹 Historial limpiado')
-                    }}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '600'
-                    }}
-                  >
-                    🧹 Limpiar
-                  </button>
-                  <button
-                    onClick={() => {
-                      // Crear una compra de prueba con estructura correcta
-                      const testPurchase = {
-                        id: Date.now().toString(),
-                        nombre: 'Test Product',
-                        email: user?.email,
-                        total: 1000,
-                        date: new Date().toISOString(),
-                        userId: user?.id,
-                        items: [
-                          { nombre: 'Producto Test', precio: 1000, cantidad: 1 }
-                        ],
-                        carrito: [
-                          { nombre: 'Producto Test', precio: 1000, cantidad: 1 }
-                        ]
-                      }
-                      const history = JSON.parse(localStorage.getItem(`purchase_history_${user?.id}`) || '[]')
-                      history.push(testPurchase)
-                      localStorage.setItem(`purchase_history_${user?.id}`, JSON.stringify(history))
-                      console.log('🧪 Compra de prueba creada:', testPurchase)
-                      refreshHistory()
-                    }}
-                    style={{
-                      padding: '8px 16px',
-                      backgroundColor: '#28a745',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                      fontWeight: '600'
-                    }}
-                  >
-                    🧪 Test
-                  </button>
-                </div>
+                <button
+                  onClick={refreshHistory}
+                  style={{
+                    padding: '8px 16px',
+                    backgroundColor: '#8a2be2',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}
+                >
+                  🔄 Actualizar
+                </button>
               </div>
               {purchaseHistory.length > 0 ? (
                 <div>
