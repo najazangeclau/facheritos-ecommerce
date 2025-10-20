@@ -91,6 +91,14 @@ function Carrito() {
     return groupItems.reduce((sum, item) => sum + item.quantity, 0)
   }
 
+  // Función para obtener la cantidad total de un grupo normal (mismo producto + talle + color)
+  const getTotalQuantityForNormalGroup = (productId, talle, color) => {
+    const groupItems = items.filter(item => 
+      item.id === productId && item.talle === talle && item.color === color
+    )
+    return groupItems.length
+  }
+
 
   const handleQuantityChange = (key, newQuantity) => {
     const qty = parseInt(newQuantity) || 1
@@ -245,7 +253,7 @@ function Carrito() {
                           const is2x1Product = PRODUCTOS_2X1_NAMES.includes(item.nombre)
                           const groupTotalQuantity = is2x1Product 
                             ? getTotalQuantityFor2x1Group(item.nombre)
-                            : item.quantity
+                            : getTotalQuantityForNormalGroup(item.id, item.talle, item.color)
                           
                           return (
                             <>
@@ -255,6 +263,9 @@ function Carrito() {
                                   e.preventDefault()
                                   e.stopPropagation()
                                   if (!item.esGratis && groupTotalQuantity > 1) {
+                                    console.log('🔢 BOTÓN - CLICKEADO:')
+                                    console.log('  - groupTotalQuantity actual:', groupTotalQuantity)
+                                    console.log('  - Nueva cantidad a enviar:', groupTotalQuantity - 1)
                                     handleQuantityChange(item.key, groupTotalQuantity - 1)
                                   }
                                 }}
@@ -262,32 +273,42 @@ function Carrito() {
                               >
                                 -
                               </button>
-                              <input
-                                type="number"
-                                min="1"
-                                value={1} // Siempre mostrar 1 para cada item individual
-                                onChange={(e) => {
-                                  handleQuantityChange(item.key, e.target.value)
-                                }}
-                                className="quantity-input"
-                                disabled={item.esGratis}
-                                style={{
-                                  width: '60px',
-                                  textAlign: 'center',
-                                  fontSize: '16px',
-                                  padding: '8px',
-                                  border: '2px solid #8a2be2',
-                                  borderRadius: '6px',
-                                  fontWeight: 'bold',
-                                  color: '#8a2be2'
-                                }}
-                              />
+                    <div
+                      contentEditable={!item.esGratis}
+                      suppressContentEditableWarning={true}
+                      onInput={(e) => {
+                        const newQuantity = parseInt(e.target.textContent) || 1
+                        // Agregar la cantidad de items que el usuario especifica
+                        handleQuantityChange(item.key, newQuantity)
+                      }}
+                      className="quantity-input"
+                      style={{
+                        width: '50px',
+                        height: '28px',
+                        border: '2px solid #e7b6d2',
+                        borderRadius: '6px',
+                        padding: '4px',
+                        textAlign: 'center',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                        color: '#8a2be2',
+                        background: 'white',
+                        outline: 'none',
+                        cursor: item.esGratis ? 'not-allowed' : 'text',
+                        opacity: item.esGratis ? 0.6 : 1
+                      }}
+                    >
+                      1
+                    </div>
                               <button 
                                 className="quantity-btn"
                                 onClick={(e) => {
                                   e.preventDefault()
                                   e.stopPropagation()
                                   if (!item.esGratis) {
+                                    console.log('🔢 BOTÓN + CLICKEADO:')
+                                    console.log('  - groupTotalQuantity actual:', groupTotalQuantity)
+                                    console.log('  - Nueva cantidad a enviar:', groupTotalQuantity + 1)
                                     handleQuantityChange(item.key, groupTotalQuantity + 1)
                                   }
                                 }}

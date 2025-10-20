@@ -13,12 +13,12 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "demo-app-id"
 }
 
-// Inicializar Firebase
-const app = initializeApp(firebaseConfig)
+// Inicializar Firebase (deshabilitado temporalmente para evitar errores)
+// const app = initializeApp(firebaseConfig)
 
-// Inicializar servicios
-export const db = getFirestore(app)
-export const auth = getAuth(app)
+// Inicializar servicios (deshabilitado temporalmente)
+// export const db = getFirestore(app)
+// export const auth = getAuth(app)
 
-export default app
+// export default app
 

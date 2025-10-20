@@ -62,6 +62,7 @@ export function CartProvider({ children }) {
     const offerValidation = validateOffer(product, talle, color)
     
     console.log('🛒 CART CONTEXT - AGREGANDO PRODUCTO:')
+    console.log('  - Producto completo:', product)
     console.log('  - Nombre:', product.nombre)
     console.log('  - ID:', product.id)
     console.log('  - Talle recibido:', talle)
@@ -70,6 +71,8 @@ export function CartProvider({ children }) {
     console.log('  - Validación oferta:', offerValidation)
     console.log('  - Está en lista 2x1:', PRODUCTOS_2X1_NAMES.includes(product.nombre))
     console.log('  - Está en lista liquidación:', PRODUCTOS_LIQUIDACION_NAMES.includes(product.nombre))
+    console.log('  - Es producto 2x1:', offerValidation.es2x1)
+    console.log('  - Es producto liquidación:', offerValidation.esLiquidacion)
     
     // Calcular precio para liquidación
     let precioFinal = product.precio
@@ -99,6 +102,7 @@ export function CartProvider({ children }) {
     
     // Crear items individuales para cada cantidad
     setItems(prev => {
+      console.log('🔄 CART CONTEXT - ESTADO ANTERIOR:', prev.length, 'items')
       const newItems = []
       
       // Agregar la cantidad especificada como items individuales
@@ -119,7 +123,9 @@ export function CartProvider({ children }) {
       }
       
       console.log('  - Items individuales creados:', newItems.length)
-      return [...prev, ...newItems]
+      const finalItems = [...prev, ...newItems]
+      console.log('🔄 CART CONTEXT - ESTADO FINAL:', finalItems.length, 'items')
+      return finalItems
     })
     
     // Resetear notificación primero, luego mostrar nueva
@@ -169,26 +175,16 @@ export function CartProvider({ children }) {
     
     const is2x1Product = PRODUCTOS_2X1_NAMES.includes(originalItem.nombre)
     
-    // Obtener items del grupo actual
-    const currentGroupItems = items.filter(item => {
-      if (is2x1Product) {
-        // Para productos 2x1, agrupar por nombre de producto
-        return item.nombre === originalItem.nombre
-      } else {
-        // Para otros productos, agrupar por producto + talle + color
-        const itemGroupKey = `${item.id}-${item.talle}-${item.color}`
-        const targetGroupKey = originalKey.split('-').slice(0, 3).join('-')
-        return itemGroupKey === targetGroupKey
-      }
-    })
+    if (is2x1Product) {
+      // Para productos 2x1, usar la lógica de grupos
+      const currentGroupItems = items.filter(item => item.nombre === originalItem.nombre)
+      const currentTotalQuantity = currentGroupItems.reduce((sum, item) => sum + item.quantity, 0)
+      const difference = newQuantity - currentTotalQuantity
+      
+      console.log('  - Cantidad actual del grupo:', currentTotalQuantity)
+      console.log('  - Diferencia:', difference)
     
-    const currentTotalQuantity = currentGroupItems.reduce((sum, item) => sum + item.quantity, 0)
-    const difference = newQuantity - currentTotalQuantity
-    
-    console.log('  - Cantidad actual del grupo:', currentTotalQuantity)
-    console.log('  - Diferencia:', difference)
-    
-    if (difference > 0) {
+      if (difference > 0) {
       // Agregar items
       const baseItem = currentGroupItems[0]
       if (baseItem) {
@@ -227,6 +223,61 @@ export function CartProvider({ children }) {
         }
         return true // Mantener este item
       }))
+    }
+    } else {
+      // Para productos individuales (no 2x1), agregar o quitar items según la diferencia
+      console.log('  - Producto individual, gestionando items')
+      
+      // Contar cuántos items existen con la misma combinación id-talle-color
+      const itemGroupKey = `${originalItem.id}-${originalItem.talle}-${originalItem.color}`
+      const currentGroupItems = items.filter(item => {
+        const currentItemGroupKey = `${item.id}-${item.talle}-${item.color}`
+        return currentItemGroupKey === itemGroupKey
+      })
+      const currentTotalQuantity = currentGroupItems.length
+      const difference = newQuantity - currentTotalQuantity
+      
+      console.log('  - Cantidad actual del grupo:', currentTotalQuantity)
+      console.log('  - Nueva cantidad solicitada:', newQuantity)
+      console.log('  - Diferencia:', difference)
+      console.log('  - Items del grupo:', currentGroupItems.map(item => ({ key: item.key, quantity: item.quantity })))
+      
+      if (difference > 0) {
+        // Agregar items
+        const newItems = []
+        for (let i = 0; i < difference; i++) {
+          const individualKey = `${originalItem.id}-${originalItem.talle}-${originalItem.color}-${Date.now()}-${i}`
+          newItems.push({
+            ...originalItem,
+            key: individualKey,
+            quantity: 1
+          })
+        }
+        console.log('  - Agregando', difference, 'items nuevos')
+        console.log('  - Items a agregar:', newItems.map(item => ({ key: item.key, nombre: item.nombre })))
+        setItems(prev => {
+          const newState = [...prev, ...newItems]
+          console.log('  - Estado anterior:', prev.length, 'items')
+          console.log('  - Estado nuevo:', newState.length, 'items')
+          return newState
+        })
+      } else if (difference < 0) {
+        // Quitar items
+        const itemsToRemove = Math.abs(difference)
+        let removedCount = 0
+        
+        console.log('  - Quitando', itemsToRemove, 'items')
+        setItems(prev => prev.filter(item => {
+          const currentItemGroupKey = `${item.id}-${item.talle}-${item.color}`
+          const shouldRemove = currentItemGroupKey === itemGroupKey && removedCount < itemsToRemove
+          
+          if (shouldRemove) {
+            removedCount++
+            return false // Remover este item
+          }
+          return true // Mantener este item
+        }))
+      }
     }
   }
 

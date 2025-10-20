@@ -82,7 +82,7 @@ function Register() {
         borderRadius: '15px',
         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
         padding: '40px',
-        width: '100%',
+        width: '90%',
         maxWidth: '400px'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '30px' }}>
@@ -94,7 +94,7 @@ function Register() {
           }}>
             📝 Crear Cuenta
           </h1>
-          <p style={{ color: '#666', fontSize: '16px' }}>
+          <p style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
             Unite a la familia Facherit@s
           </p>
         </div>
@@ -257,7 +257,7 @@ function Register() {
         </form>
 
         <div style={{ textAlign: 'center' }}>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', textAlign: 'center' }}>
             ¿Ya tenés cuenta?
           </p>
           <Link

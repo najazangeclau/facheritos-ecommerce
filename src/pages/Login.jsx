@@ -76,7 +76,7 @@ function Login() {
           }}>
             🔐 Iniciar Sesión
           </h1>
-          <p style={{ color: '#666', fontSize: '16px' }}>
+          <p style={{ color: '#666', fontSize: '16px', textAlign: 'center' }}>
             Ingresá a tu cuenta de Facherit@s
           </p>
         </div>
@@ -181,7 +181,7 @@ function Login() {
         </form>
 
         <div style={{ textAlign: 'center' }}>
-          <p style={{ color: '#666', marginBottom: '15px' }}>
+          <p style={{ color: '#666', marginBottom: '15px', textAlign: 'center' }}>
             ¿No tenés cuenta?
           </p>
           <Link

@@ -7,6 +7,16 @@ function Navbar() {
   const { totalItems } = useCart()
   const { user, logout, isAuthenticated } = useAuth()
   const [searchTerm, setSearchTerm] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [submenuStates, setSubmenuStates] = useState({explorar: false, ofertas: false, contacto: false})
+
+  const toggleSubmenu = (key) => {
+    setSubmenuStates(prev => {
+      const newStates = {explorar: false, ofertas: false, contacto: false}
+      newStates[key] = !prev[key]
+      return newStates
+    })
+  }
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -18,32 +28,15 @@ function Navbar() {
 
   return (
     <nav>
-      <ul className="menu">
-        <li>
-          <a>🧥 ¡Explorá más!</a>
-          <ul className="submenu">
-            <li><Link to="/ninas">Ropa de Niñas</Link></li>
-            <li><Link to="/ninos">Ropa de Niños</Link></li>
-            <li><Link to="/bebe">Ropa de Bebé</Link></li>
-            <li><Link to="/accesorios">Accesorios</Link></li>
-          </ul>
-        </li>
-        <li>
-          <a>💥 Ofertas</a>
-          <ul className="submenu">
-            <li><Link to="/2x1">2x1</Link></li>
-            <li><Link to="/liquidaciones">Liquidaciones</Link></li>
-          </ul>
-        </li>
-        <li>
-          <a>📞 Contactanos</a>
-          <ul className="submenu">
-            <li><Link to="/whatsapp">WhatsApp</Link></li>
-            <li><Link to="/contacto">Email</Link></li>
-          </ul>
-        </li>
-        <li><Link to="/ubicacion">📍 ¿Dónde estamos?</Link></li>
-        <li className="search-container">
+      <div className="nav-top-bar">
+        <button
+          className="hamburger-menu"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          aria-label="Toggle menu"
+        >
+          ☰
+        </button>
+        <div className="search-container">
           <form onSubmit={handleSearch} className="search-form">
             <input
               type="text"
@@ -56,45 +49,54 @@ function Navbar() {
               🔍
             </button>
           </form>
+        </div>
+        <Link to="/carrito" className="cart-link">
+          <span className="cart-icon">🛒</span>
+          {totalItems > 0 && (
+            <span className="cart-badge">{totalItems}</span>
+          )}
+        </Link>
+      </div>
+      <ul className={`menu ${isMenuOpen ? 'menu-open' : ''}`}>
+        <li className="has-submenu">
+          <a onClick={() => toggleSubmenu('explorar')} className="menu-item">
+            🧥 ¡Explorá más!
+            <span className={`arrow ${submenuStates.explorar ? 'rotated' : ''}`}>▶</span>
+          </a>
+          <ul className={`submenu ${submenuStates.explorar ? 'submenu-open' : ''}`}>
+            <li><Link to="/ninas" onClick={() => setIsMenuOpen(false)}>Ropa de Niñas</Link></li>
+            <li><Link to="/ninos" onClick={() => setIsMenuOpen(false)}>Ropa de Niños</Link></li>
+            <li><Link to="/bebe" onClick={() => setIsMenuOpen(false)}>Ropa de Bebé</Link></li>
+            <li><Link to="/accesorios" onClick={() => setIsMenuOpen(false)}>Accesorios</Link></li>
+          </ul>
         </li>
-        <li>
-          <Link to="/carrito" style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-            textDecoration: 'none',
-            color: 'darkblue',
-            fontWeight: '600',
-            padding: '12px 15px',
-            transition: 'color 0.3s, transform 0.2s',
-            fontSize: '16px',
-            whiteSpace: 'nowrap'
-          }}>
-            <span style={{ fontSize: '16px' }}>🛒</span>
-            <span style={{
-              background: '#8a2be2',
-              color: 'white',
-              borderRadius: '50%',
-              width: '18px',
-              height: '18px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '11px',
-              fontWeight: 'bold',
-              minWidth: '18px',
-              marginLeft: '4px'
-            }}>
-              {totalItems}
-            </span>
-          </Link>
+        <li className="has-submenu">
+          <a onClick={() => toggleSubmenu('ofertas')} className="menu-item">
+            💥 Ofertas
+            <span className={`arrow ${submenuStates.ofertas ? 'rotated' : ''}`}>▶</span>
+          </a>
+          <ul className={`submenu ${submenuStates.ofertas ? 'submenu-open' : ''}`}>
+            <li><Link to="/2x1" onClick={() => setIsMenuOpen(false)}>2x1</Link></li>
+            <li><Link to="/liquidaciones" onClick={() => setIsMenuOpen(false)}>Liquidaciones</Link></li>
+          </ul>
         </li>
+        <li className="has-submenu">
+          <a onClick={() => toggleSubmenu('contacto')} className="menu-item">
+            📞 Contactanos
+            <span className={`arrow ${submenuStates.contacto ? 'rotated' : ''}`}>▶</span>
+          </a>
+          <ul className={`submenu ${submenuStates.contacto ? 'submenu-open' : ''}`}>
+            <li><Link to="/whatsapp" onClick={() => setIsMenuOpen(false)}>WhatsApp</Link></li>
+            <li><Link to="/contacto" onClick={() => setIsMenuOpen(false)}>Email</Link></li>
+          </ul>
+        </li>
+        <li><Link to="/ubicacion" onClick={() => setIsMenuOpen(false)}>📍 ¿Dónde estamos?</Link></li>
         
         {/* Opciones de autenticación */}
         {isAuthenticated() ? (
           <>
             <li>
-              <Link to="/profile" style={{
+              <Link to="/profile" onClick={() => setIsMenuOpen(false)} style={{
                 display: 'flex',
                 alignItems: 'center',
                 textDecoration: 'none',
@@ -114,6 +116,7 @@ function Navbar() {
                   e.preventDefault()
                   if (confirm('¿Estás seguro de que querés cerrar sesión?')) {
                     logout()
+                    setIsMenuOpen(false)
                   }
                 }}
                 style={{
@@ -142,36 +145,12 @@ function Navbar() {
         ) : (
           <>
             <li>
-              <Link to="/login" style={{
-                textDecoration: 'none',
-                color: 'darkblue',
-                fontWeight: '600',
-                padding: '8px 4px',
-                transition: 'color 0.3s, transform 0.2s',
-                fontSize: '10px',
-                minHeight: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%'
-              }}>
+              <Link to="/login" onClick={() => setIsMenuOpen(false)}>
                 <span style={{ fontSize: '14px' }}>🔐</span> Login
               </Link>
             </li>
             <li>
-              <Link to="/register" style={{
-                textDecoration: 'none',
-                color: 'darkblue',
-                fontWeight: '600',
-                padding: '8px 4px',
-                transition: 'color 0.3s, transform 0.2s',
-                fontSize: '10px',
-                minHeight: '36px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                width: '100%'
-              }}>
+              <Link to="/register" onClick={() => setIsMenuOpen(false)}>
                 <span style={{ fontSize: '14px' }}>📝</span> Registro
               </Link>
             </li>

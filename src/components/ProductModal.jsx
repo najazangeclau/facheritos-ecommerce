@@ -90,12 +90,25 @@ function ProductModal({ product, isOpen, onClose }) {
 
   const handleAddToCart = () => {
     console.log('🛒 AGREGANDO DESDE MODAL:')
-    console.log('  - Producto:', product.nombre)
+    console.log('  - Producto completo:', product)
+    console.log('  - Producto nombre:', product.nombre)
+    console.log('  - Producto ID:', product.id)
     console.log('  - Talle seleccionado:', talle)
     console.log('  - Color seleccionado:', color)
     console.log('  - Cantidad:', cantidad)
+    console.log('  - addItem disponible:', typeof addItem)
+    console.log('  - Opciones que se pasan:', { talle, color, cantidad })
     
-    addItem(product, { talle, color, cantidad })
+    if (typeof addItem === 'function') {
+      console.log('🔄 EJECUTANDO addItem...')
+      addItem(product, { talle, color, cantidad })
+      console.log('✅ addItem ejecutado correctamente')
+      console.log('🔄 CERRANDO MODAL...')
+    } else {
+      console.error('❌ addItem no está disponible o no es una función')
+    }
+    
+    console.log('🔄 CERRANDO MODAL Y RESETEANDO ESTADO...')
     onClose()
   }
 
@@ -162,7 +175,11 @@ function ProductModal({ product, isOpen, onClose }) {
             min="1"
             max={10}
             value={cantidad}
-            onChange={(e) => setCantidad(parseInt(e.target.value) || 1)}
+            onChange={(e) => {
+              const newCantidad = parseInt(e.target.value) || 1
+              console.log('🔢 CANTIDAD CAMBIADA:', newCantidad)
+              setCantidad(newCantidad)
+            }}
           />
         </div>
 
