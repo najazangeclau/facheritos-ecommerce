@@ -17,6 +17,25 @@ export const AuthProvider = ({ children }) => {
 
   // Cargar usuario desde localStorage al iniciar
   useEffect(() => {
+    // Crear usuario admin si no existe
+    const existingUsers = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
+    const adminExists = existingUsers.find(u => u.email === 'admin@facheritos.com')
+    
+    if (!adminExists) {
+      const adminUser = {
+        id: 'admin-001',
+        name: 'Administrador',
+        email: 'admin@facheritos.com',
+        password: 'admin123',
+        role: 'admin',
+        avatar: 'A',
+        createdAt: new Date().toISOString()
+      }
+      existingUsers.push(adminUser)
+      localStorage.setItem('facheritos_users', JSON.stringify(existingUsers))
+      console.log('✅ Usuario admin creado automáticamente')
+    }
+
     const savedUser = localStorage.getItem('facheritos_user')
     if (savedUser) {
       try {

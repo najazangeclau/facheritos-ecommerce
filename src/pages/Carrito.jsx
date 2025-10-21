@@ -280,6 +280,10 @@ function Carrito() {
                         const newQuantity = parseInt(e.target.textContent) || 1
                         // Agregar la cantidad de items que el usuario especifica
                         handleQuantityChange(item.key, newQuantity)
+                        // Resetear el contenido a "1" después de procesar
+                        setTimeout(() => {
+                          e.target.textContent = "1"
+                        }, 100)
                       }}
                       className="quantity-input"
                       style={{
