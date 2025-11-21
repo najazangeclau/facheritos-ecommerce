@@ -5,9 +5,12 @@ function Footer() {
       <div className="footer-content">
         <span className="footer-text">Desarrollador: Natalia - 2025</span>
         <span className="separator">|</span>
-        <a href="mailto:facheritos@gmail.com" className="footer-link">
+        <a 
+          href="mailto:facheritosropaparaninos@gmail.com" 
+          className="footer-link"
+          aria-label="Enviar correo a Facherit@s"
+        >
           <i className="fas fa-envelope"></i>
-          facheritos@gmail.com
         </a>
         <span className="separator">|</span>
         <div className="social-links">

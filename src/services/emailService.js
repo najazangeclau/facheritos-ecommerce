@@ -40,7 +40,7 @@ export const emailService = {
         phone: formData.telefono,
         message: formData.mensaje,
         motivo: formData.motivo,
-        to_email: 'facheritos@gmail.com' // Tu email
+        to_email: 'facheritosropaparaninos@gmail.com' // Tu email
       }
 
       const response = await window.emailjs.send(
@@ -72,7 +72,7 @@ export const emailService = {
         payment_method: formData.metodoPago,
         cart_items: JSON.stringify(carrito, null, 2),
         total_amount: total,
-        to_email: 'facheritos@gmail.com' // Tu email
+        to_email: 'facheritosropaparaninos@gmail.com' // Tu email
       }
 
       const response = await window.emailjs.send(
