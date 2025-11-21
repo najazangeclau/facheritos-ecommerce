@@ -61,18 +61,8 @@ export function CartProvider({ children }) {
     // Validar ofertas basado en talle/color actual
     const offerValidation = validateOffer(product, talle, color)
     
-    console.log('🛒 CART CONTEXT - AGREGANDO PRODUCTO:')
-    console.log('  - Producto completo:', product)
-    console.log('  - Nombre:', product.nombre)
-    console.log('  - ID:', product.id)
-    console.log('  - Talle recibido:', talle)
-    console.log('  - Color recibido:', color)
-    console.log('  - Cantidad recibida:', cantidad)
-    console.log('  - Validación oferta:', offerValidation)
-    console.log('  - Está en lista 2x1:', PRODUCTOS_2X1_NAMES.includes(product.nombre))
-    console.log('  - Está en lista liquidación:', PRODUCTOS_LIQUIDACION_NAMES.includes(product.nombre))
-    console.log('  - Es producto 2x1:', offerValidation.es2x1)
-    console.log('  - Es producto liquidación:', offerValidation.esLiquidacion)
+    // Debug: descomentar para ver detalles de agregado de productos
+    // console.log('🛒 Agregando producto:', product.nombre, { talle, color, cantidad, offerValidation })
     
     // Calcular precio para liquidación
     let precioFinal = product.precio
@@ -102,7 +92,6 @@ export function CartProvider({ children }) {
     
     // Crear items individuales para cada cantidad
     setItems(prev => {
-      console.log('🔄 CART CONTEXT - ESTADO ANTERIOR:', prev.length, 'items')
       const newItems = []
       
       // Agregar la cantidad especificada como items individuales
@@ -122,16 +111,13 @@ export function CartProvider({ children }) {
         })
       }
       
-      console.log('  - Items individuales creados:', newItems.length)
-      const finalItems = [...prev, ...newItems]
-      console.log('🔄 CART CONTEXT - ESTADO FINAL:', finalItems.length, 'items')
-      return finalItems
+      return [...prev, ...newItems]
     })
     
     // Resetear notificación primero, luego mostrar nueva
     setNotification({ isVisible: false, product: null })
     setTimeout(() => {
-    setNotification({ isVisible: true, product })
+      setNotification({ isVisible: true, product })
     }, 100)
   }
 
@@ -398,6 +384,10 @@ export function CartProvider({ children }) {
     setNotification({ isVisible: false, product: null })
   }
 
+  const closeNotification = () => {
+    setNotification({ isVisible: false, product: null })
+  }
+
   // Lógica 2x1 - VERSIÓN SIMPLIFICADA
   const itemsWithPromo = useMemo(() => {
     const result = []
@@ -535,7 +525,7 @@ export function CartProvider({ children }) {
       updateColor,
       clear, 
       notification,
-    setNotification
+      closeNotification
   }), [items, itemsWithPromo, totalItems, totalPrice, notification])
 
   return (

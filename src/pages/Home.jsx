@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react'
-import { reviewsService, formUtils } from '../services/forms'
+import { Helmet } from 'react-helmet-async'
+import { toast } from 'react-toastify'
+import { FaStar, FaStarHalfAlt, FaTrash } from 'react-icons/fa'
+import { reviewsService } from '../services/forms'
 
 function Home() {
   const [reviews, setReviews] = useState([])
@@ -69,7 +72,7 @@ function Home() {
     e.preventDefault()
     
     if (!newReview.name || !newReview.comment || selectedStars === 0) {
-      formUtils.mostrarNotificacion('Por favor, escribí tu reseña, tu nombre y seleccioná una calificación.', 'error')
+      toast.error('Por favor, escribí tu reseña, tu nombre y seleccioná una calificación.')
       return
     }
 
@@ -86,13 +89,13 @@ function Home() {
     const resultado = await reviewsService.enviarReview(reviewData)
     
     if (resultado.success) {
-      formUtils.mostrarNotificacion('¡Reseña enviada correctamente! Gracias por tu opinión.', 'success')
+      toast.success('¡Reseña enviada correctamente! Gracias por tu opinión.')
       
       setNewReview({ name: '', rating: 0, comment: '', product: '', talle: '' })
       setSelectedStars(0)
       loadDynamicReviews()
     } else {
-      formUtils.mostrarNotificacion('No se pudo enviar la reseña. Intentalo más tarde.', 'error')
+      toast.error('No se pudo enviar la reseña. Intentalo más tarde.')
     }
   }
 
@@ -109,7 +112,7 @@ function Home() {
     
     if (password !== ADMIN_PASSWORD) {
       console.log('❌ Contraseña incorrecta:', password)
-      alert('Contraseña incorrecta')
+      toast.error('Contraseña incorrecta')
       return
     }
 
@@ -119,11 +122,11 @@ function Home() {
     
     if (resultado) {
       console.log('✅ Reseña eliminada correctamente')
-      formUtils.mostrarNotificacion('Reseña eliminada correctamente', 'success')
+      toast.success('Reseña eliminada correctamente')
       loadDynamicReviews()
     } else {
       console.error('❌ Error al eliminar la reseña')
-      formUtils.mostrarNotificacion('Error al eliminar la reseña', 'error')
+      toast.error('Error al eliminar la reseña')
     }
   }
 
@@ -152,6 +155,11 @@ function Home() {
 
   return (
     <>
+      <Helmet>
+        <title>Facherit@s - Ropa Infantil con Estilo y Comodidad</title>
+        <meta name="description" content="Facherit@s es un emprendimiento dedicado a vestir a los niños y niñas con ropa que combina estilo, comodidad y diversión. Descubrí nuestras colecciones de ropa infantil." />
+        <meta name="keywords" content="ropa infantil, ropa para niños, ropa para niñas, ropa para bebés, accesorios infantiles, Facherit@s" />
+      </Helmet>
     <main>
       <div className="publicity-image-cell">
         <img src="/img/portada.png" alt="Publicidad facheritos" />
@@ -196,13 +204,13 @@ function Home() {
               </div>
               <div className="review-stars">
                 {Array.from({ length: Math.floor(review.rating) }, (_, i) => (
-                  <i key={i} className="fas fa-star" style={{color:'#FFD700'}}></i>
+                  <FaStar key={i} style={{color:'#FFD700'}} />
                 ))}
                 {review.rating % 1 !== 0 && (
-                  <i className="fas fa-star-half-alt" style={{color:'#FFD700'}}></i>
+                  <FaStarHalfAlt style={{color:'#FFD700'}} />
                 )}
                 {Array.from({ length: Math.floor(5 - review.rating) }, (_, i) => (
-                  <i key={i} className="far fa-star" style={{color:'#FFD700'}}></i>
+                  <FaStar key={`empty-${i}`} style={{color:'#FFD700', opacity: 0.3}} />
                 ))}
               </div>
               <p className="review-text">"{review.comment}"</p>
@@ -240,10 +248,10 @@ function Home() {
               </div>
               <div className="review-stars">
                 {Array.from({ length: review.rating }, (_, i) => (
-                  <i key={i} className="fas fa-star" style={{color:'#FFD700'}}></i>
+                  <FaStar key={i} style={{color:'#FFD700'}} />
                 ))}
                 {Array.from({ length: 5 - review.rating }, (_, i) => (
-                  <i key={i} className="far fa-star" style={{color:'#FFD700'}}></i>
+                  <FaStar key={`empty-${i}`} style={{color:'#FFD700', opacity: 0.3}} />
                 ))}
               </div>
               <p className="review-text">"{review.comment}"</p>
@@ -267,19 +275,14 @@ function Home() {
               <button 
                 className="eliminar-resena" 
                 data-id={review.ID || review.id} 
-                style={{ display: 'none' }}
+                style={{ display: 'none', background: 'transparent', border: 'none', cursor: 'pointer', color: '#e07bb7' }}
                 onClick={(e) => {
                   e.stopPropagation()
                   deleteReview(review.ID || review.id)
                 }}
+                aria-label="Eliminar reseña"
               >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="5" y="7" width="14" height="12" rx="2" fill="#fff6fa" stroke="#e07bb7" strokeWidth="2"/>
-                  <rect x="9" y="3" width="6" height="4" rx="1.5" fill="#e07bb7"/>
-                  <line x1="8.5" y1="10" x2="8.5" y2="16" stroke="#e07bb7" strokeWidth="1.5"/>
-                  <line x1="12" y1="10" x2="12" y2="16" stroke="#e07bb7" strokeWidth="1.5"/>
-                  <line x1="15.5" y1="10" x2="15.5" y2="16" stroke="#e07bb7" strokeWidth="1.5"/>
-                </svg>
+                <FaTrash size={20} />
               </button>
             </div>
             )
@@ -290,14 +293,18 @@ function Home() {
           <h3>¡Dejá tu reseña!</h3>
           <div>
             <label htmlFor="review-stars">Calificación:</label><br/>
-            <span id="star-select">
+            <span id="star-select" style={{ display: 'flex', gap: '5px', cursor: 'pointer' }}>
               {[1,2,3,4,5].map(star => (
-                <i 
+                <FaStar 
                   key={star}
-                  className={star <= selectedStars ? "fas fa-star" : "far fa-star"} 
                   data-star={star} 
                   onClick={() => handleStarClick(star)}
-                ></i>
+                  style={{ 
+                    color: star <= selectedStars ? '#FFD700' : '#ccc',
+                    fontSize: '24px',
+                    transition: 'color 0.2s'
+                  }}
+                />
               ))}
             </span>
           </div>

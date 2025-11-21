@@ -49,6 +49,10 @@ function UserProfile() {
   }, [user])
 
   const formatDate = (dateString) => {
+    if (!dateString) {
+      return 'Sin información'
+    }
+    
     return new Date(dateString).toLocaleDateString('es-AR', {
       year: 'numeric',
       month: 'long',

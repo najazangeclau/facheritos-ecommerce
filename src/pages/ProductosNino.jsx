@@ -1,31 +1,20 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { fetchProducts } from '../services/products'
 import ProductModal from '../components/ProductModal'
 import ProductDetailModal from '../components/ProductDetailModal'
+import { useProducts } from '../context/ProductContext'
 
 function ProductosNino() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { products, loading, error } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDetailProduct, setSelectedDetailProduct] = useState(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
 
-  useEffect(() => {
-    let mounted = true
-    fetchProducts()
-      .then((data) => {
-        if (!mounted) return
-        const filtered = data.filter((p) => String(p.categoria || '').toLowerCase() === 'ninos')
-        setProducts(filtered.length ? filtered : data)
-      })
-      .catch((e) => mounted && setError(e.message))
-      .finally(() => mounted && setLoading(false))
-    return () => (mounted = false)
-  }, [])
+  const productosNino = useMemo(
+    () => products.filter((p) => String(p.categoria || '').toLowerCase() === 'ninos'),
+    [products]
+  )
 
   const handleAddToCart = (product) => {
     setSelectedProduct(product)
@@ -57,7 +46,10 @@ function ProductosNino() {
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {!loading && !error && (
         <div className="galeria">
-          {products.map((p) => (
+          {productosNino.length === 0 && (
+            <p style={{ width: '100%', textAlign: 'center' }}>No hay productos disponibles para niños.</p>
+          )}
+          {productosNino.map((p) => (
             <div key={p.id} className="producto">
               {p.imagen && <img src={p.imagen} alt={p.nombre} />}
               <h3>{p.nombre}</h3>

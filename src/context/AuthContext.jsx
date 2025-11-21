@@ -17,9 +17,21 @@ export const AuthProvider = ({ children }) => {
 
   // Cargar usuario desde localStorage al iniciar
   useEffect(() => {
-    // Crear usuario admin si no existe
-    const existingUsers = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
-    const adminExists = existingUsers.find(u => u.email === 'admin@facheritos.com')
+    let storedUsers = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
+    let usersUpdated = false
+
+    storedUsers = storedUsers.map(userRecord => {
+      if (!userRecord.createdAt) {
+        usersUpdated = true
+        return {
+          ...userRecord,
+          createdAt: new Date().toISOString()
+        }
+      }
+      return userRecord
+    })
+
+    const adminExists = storedUsers.find(u => u.email === 'admin@facheritos.com')
     
     if (!adminExists) {
       const adminUser = {
@@ -31,15 +43,27 @@ export const AuthProvider = ({ children }) => {
         avatar: 'A',
         createdAt: new Date().toISOString()
       }
-      existingUsers.push(adminUser)
-      localStorage.setItem('facheritos_users', JSON.stringify(existingUsers))
+      storedUsers.push(adminUser)
+      usersUpdated = true
       console.log('✅ Usuario admin creado automáticamente')
+    }
+
+    if (usersUpdated) {
+      localStorage.setItem('facheritos_users', JSON.stringify(storedUsers))
     }
 
     const savedUser = localStorage.getItem('facheritos_user')
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser))
+        const parsedUser = JSON.parse(savedUser)
+        if (!parsedUser.createdAt) {
+          const match = storedUsers.find(u => u.id === parsedUser.id)
+          if (match?.createdAt) {
+            parsedUser.createdAt = match.createdAt
+            localStorage.setItem('facheritos_user', JSON.stringify(parsedUser))
+          }
+        }
+        setUser(parsedUser)
       } catch (error) {
         console.error('Error cargando usuario:', error)
         localStorage.removeItem('facheritos_user')
@@ -52,17 +76,23 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true)
     try {
-      // Simular validación (en un proyecto real sería una API)
       const users = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
-      const foundUser = users.find(u => u.email === email && u.password === password)
-      
-      if (foundUser) {
+      const userIndex = users.findIndex(u => u.email === email && u.password === password)
+      if (userIndex !== -1) {
+        const foundUser = users[userIndex]
+        const createdAt = foundUser.createdAt || new Date().toISOString()
+        if (!foundUser.createdAt) {
+          users[userIndex].createdAt = createdAt
+          localStorage.setItem('facheritos_users', JSON.stringify(users))
+        }
+
         const userData = {
           id: foundUser.id,
           name: foundUser.name,
           email: foundUser.email,
           role: foundUser.role || 'user',
-          avatar: foundUser.avatar || foundUser.name.charAt(0).toUpperCase()
+          avatar: foundUser.avatar || foundUser.name.charAt(0).toUpperCase(),
+          createdAt
         }
         
         setUser(userData)
@@ -110,7 +140,8 @@ export const AuthProvider = ({ children }) => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        avatar: newUser.avatar
+        avatar: newUser.avatar,
+        createdAt: newUser.createdAt
       }
 
       setUser(userData)
@@ -131,6 +162,41 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('facheritos_user')
   }
 
+  const resetPassword = async (email, newPassword) => {
+    setLoading(true)
+    try {
+      const users = JSON.parse(localStorage.getItem('facheritos_users') || '[]')
+      const userIndex = users.findIndex(u => u.email === email)
+
+      if (userIndex === -1) {
+        return { success: false, error: 'No encontramos una cuenta con ese email' }
+      }
+
+      users[userIndex].password = newPassword
+      localStorage.setItem('facheritos_users', JSON.stringify(users))
+
+      if (user?.email === email) {
+        const updatedUser = {
+          id: users[userIndex].id,
+          name: users[userIndex].name,
+          email: users[userIndex].email,
+          role: users[userIndex].role || 'user',
+          avatar: users[userIndex].avatar || users[userIndex].name.charAt(0).toUpperCase(),
+          createdAt: users[userIndex].createdAt
+        }
+        setUser(updatedUser)
+        localStorage.setItem('facheritos_user', JSON.stringify(updatedUser))
+      }
+
+      return { success: true }
+    } catch (error) {
+      console.error('Error reseteando contraseña:', error)
+      return { success: false, error: 'No pudimos restablecer la contraseña. Intentalo más tarde.' }
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Verificar si es admin
   const isAdmin = () => {
     return user?.role === 'admin'
@@ -147,6 +213,7 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    resetPassword,
     isAdmin,
     isAuthenticated
   }

@@ -8,8 +8,6 @@ import { useCart } from './context/CartContext'
 function App() {
   const { notification, closeNotification } = useCart()
 
-  console.log('App - notification:', notification)
-
   return (
     <>
       <Header />

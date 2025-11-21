@@ -11,10 +11,15 @@
     "gen:products": "node ../scripts/generate-products.mjs"
   },
   "dependencies": {
+    "bootstrap": "^5.3.8",
     "firebase": "^12.4.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "react-router-dom": "^7.9.3"
+    "react-helmet-async": "^2.0.5",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^7.9.3",
+    "react-toastify": "^11.0.5",
+    "styled-components": "^6.1.19"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

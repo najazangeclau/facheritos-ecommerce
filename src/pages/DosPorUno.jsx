@@ -1,67 +1,57 @@
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { fetchProducts } from '../services/products'
 import ProductModal from '../components/ProductModal'
 import ProductDetailModal from '../components/ProductDetailModal'
+import { useProducts } from '../context/ProductContext'
+
+const PRODUCTOS_2X1 = [
+  {
+    id: 1,
+    nombre: 'Bermuda Jean',
+    precio: 4500,
+    imagen: '/img/ropa-nino/bermuda.png',
+    categoria: 'ninos'
+  },
+  {
+    id: 2,
+    nombre: 'Pantalón Cargo',
+    precio: 8900,
+    imagen: '/img/ropa-nino/pantalon cargo.png',
+    categoria: 'ninos'
+  },
+  {
+    id: 3,
+    nombre: 'Pollera Recta',
+    precio: 10500,
+    imagen: '/img/ropa-nina/pollera-recta-photoroom.png',
+    categoria: 'ninas'
+  },
+  {
+    id: 4,
+    nombre: 'Vincha',
+    precio: 7000,
+    imagen: '/img/accesorios/vincha.png',
+    categoria: 'accesorios'
+  }
+]
 
 function DosPorUno() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { products, loading, error } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDetailProduct, setSelectedDetailProduct] = useState(null)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
 
-  useEffect(() => {
-    let mounted = true
-    // Productos específicos para 2x1 según las imágenes
-    const productos2x1 = [
-      {
-        id: 1,
-        nombre: "Bermuda Jean",
-        precio: 4500, // Precio normal del products.json
-        imagen: "/img/ropa-nino/bermuda.png",
-        categoria: "ninos",
-        es2x1: true,
-        precioOriginal: 4500
-      },
-      {
-        id: 2,
-        nombre: "Pantalón Cargo",
-        precio: 8900, // Ya coincide con products.json
-        imagen: "/img/ropa-nino/pantalon cargo.png",
-        categoria: "ninos",
-        es2x1: true,
-        precioOriginal: 8900
-      },
-      {
-        id: 3,
-        nombre: "Pollera Recta",
-        precio: 10500, // Precio normal del products.json
-        imagen: "/img/ropa-nina/pollera-recta-photoroom.png",
-        categoria: "ninas",
-        es2x1: true,
-        precioOriginal: 10500
-      },
-      {
-        id: 4,
-        nombre: "Vincha",
-        precio: 7000, // Precio normal del products.json
-        imagen: "/img/accesorios/vincha.png",
-        categoria: "accesorios",
-        es2x1: true,
-        precioOriginal: 7000
-      }
-    ]
-    
-    if (mounted) {
-      setProducts(productos2x1)
-      setLoading(false)
-    }
-    return () => (mounted = false)
-  }, [])
+  const productos2x1 = useMemo(() => {
+    const apiProducts = products.filter((p) => PRODUCTOS_2X1.some((item) => item.nombre === p.nombre))
+    const source = apiProducts.length ? apiProducts : PRODUCTOS_2X1
+    return source.map((p) => ({
+      ...p,
+      es2x1: true,
+      precioOriginal: p.precio,
+      precio: p.precio
+    }))
+  }, [products])
 
   const handleAddToCart = (product) => {
     setSelectedProduct(product)
@@ -101,7 +91,10 @@ function DosPorUno() {
       
       {!loading && !error && (
         <div className="galeria galeria-2x1">
-          {products.map((p) => (
+          {productos2x1.length === 0 && (
+            <p style={{ width: '100%', textAlign: 'center' }}>No hay promociones 2x1 disponibles.</p>
+          )}
+          {productos2x1.map((p) => (
             <div key={p.id} className="producto liquidacion-item">
               {p.imagen && <img src={p.imagen} alt={p.nombre} />}
               <h3>{p.nombre}</h3>

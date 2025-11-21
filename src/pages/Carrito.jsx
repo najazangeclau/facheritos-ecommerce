@@ -2,6 +2,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 
 // Importar constantes de productos 2x1
 const PRODUCTOS_2X1_NAMES = ['Bermuda Jean', 'Pantalón Cargo', 'Pollera Recta', 'Vincha']
@@ -159,7 +160,7 @@ function Carrito() {
 
   const handlePagar = () => {
     if (!isAuthenticated()) {
-      alert('Debes iniciar sesión para continuar con la compra')
+      toast.info('Debés iniciar sesión para continuar con la compra')
       navigate('/login')
       return
     }

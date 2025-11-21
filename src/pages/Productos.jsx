@@ -1,38 +1,25 @@
-import { useEffect, useState } from 'react'
-import { useCart } from '../context/CartContext'
-import { fetchProducts } from '../services/products'
+import { useEffect, useMemo, useState } from 'react'
+import { Helmet } from 'react-helmet-async'
+import { FaSearch, FaShoppingCart, FaTimes } from 'react-icons/fa'
 import ProductModal from '../components/ProductModal'
 import { useSearchParams } from 'react-router-dom'
+import { useProducts } from '../context/ProductContext'
 
 function Productos() {
-  const [products, setProducts] = useState([])
+  const { products, loading, error } = useProducts()
   const [filteredProducts, setFilteredProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [searchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [priceRange, setPriceRange] = useState({ min: '', max: '' })
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 12
 
   useEffect(() => {
-    let mounted = true
-    setLoading(true)
-    fetchProducts()
-      .then((data) => {
-        if (mounted) {
-          setProducts(data)
-          setFilteredProducts(data)
-          setError(null)
-        }
-      })
-      .catch((e) => mounted && setError(e.message))
-      .finally(() => mounted && setLoading(false))
-    return () => {
-      mounted = false
-    }
-  }, [])
+    setFilteredProducts(products)
+  }, [products])
 
   // Efecto para manejar búsqueda desde URL
   useEffect(() => {
@@ -77,7 +64,18 @@ function Productos() {
     }
 
     setFilteredProducts(filtered)
+    setCurrentPage(1) // Resetear a la primera página cuando cambian los filtros
   }, [products, searchTerm, selectedCategory, priceRange])
+
+  // Calcular productos paginados
+  const paginatedProducts = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage
+    const endIndex = startIndex + itemsPerPage
+    return filteredProducts.slice(startIndex, endIndex)
+  }, [filteredProducts, currentPage])
+
+  // Calcular total de páginas
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage)
 
   const handleAddToCart = (product) => {
     setSelectedProduct(product)
@@ -95,20 +93,43 @@ function Productos() {
     setPriceRange({ min: '', max: '' })
   }
 
-  const categories = [...new Set(products.map(p => p.categoria))].filter(Boolean)
+  const categories = useMemo(
+    () => [...new Set((products || []).map(p => p.categoria))].filter(Boolean),
+    [products]
+  )
 
   return (
+    <>
+      <Helmet>
+        <title>Productos - Facherit@s | Catálogo Completo de Ropa Infantil</title>
+        <meta name="description" content="Explorá nuestro catálogo completo de ropa infantil. Encontrá prendas para niñas, niños y bebés con los mejores precios y calidad." />
+        <meta name="keywords" content="productos infantiles, catálogo ropa niños, ropa infantil online, Facherit@s productos" />
+      </Helmet>
     <main>
       {/* Filtros de búsqueda */}
       <div className="filters-container">
         <div className="search-filters">
-          <input
-            type="text"
-            placeholder="Buscar productos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input-filter"
-          />
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <FaSearch style={{ position: 'absolute', left: '10px', color: '#8a2be2' }} />
+            <input
+              type="text"
+              placeholder="Buscar productos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input-filter"
+              style={{ paddingLeft: '35px' }}
+              aria-label="Buscar productos"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm('')}
+                style={{ position: 'absolute', right: '10px', background: 'none', border: 'none', cursor: 'pointer', color: '#8a2be2' }}
+                aria-label="Limpiar búsqueda"
+              >
+                <FaTimes />
+              </button>
+            )}
+          </div>
           
           <select
             value={selectedCategory}
@@ -138,7 +159,8 @@ function Productos() {
             />
           </div>
           
-          <button onClick={clearFilters} className="clear-filters-btn">
+          <button onClick={clearFilters} className="clear-filters-btn" aria-label="Limpiar todos los filtros">
+            <FaTimes style={{ marginRight: '5px' }} />
             Limpiar filtros
           </button>
         </div>
@@ -151,25 +173,80 @@ function Productos() {
       {loading && <p>Cargando...</p>}
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
       {!loading && !error && (
-        <div className="galeria">
-          {filteredProducts.length > 0 ? (
-            filteredProducts.map((p) => (
-              <div key={p.id} className="producto">
-                {p.imagen && <img src={p.imagen} alt={p.nombre} />}
-                <h3>{p.nombre}</h3>
-                <p className="precio">${p.precio}</p>
-                <button className="boton-carrito" onClick={() => handleAddToCart(p)}>Agregar al carrito</button>
+        <>
+          <div className="galeria">
+            {paginatedProducts.length > 0 ? (
+              paginatedProducts.map((p) => (
+                <div key={p.id} className="producto">
+                  {p.imagen && <img src={p.imagen} alt={p.nombre} />}
+                  <h3>{p.nombre}</h3>
+                  <p className="precio">${p.precio}</p>
+                  <button 
+                    className="boton-carrito" 
+                    onClick={() => handleAddToCart(p)}
+                    aria-label={`Agregar ${p.nombre} al carrito`}
+                  >
+                    <FaShoppingCart style={{ marginRight: '5px' }} />
+                    Agregar al carrito
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="no-results">
+                <p>No se encontraron productos con los filtros aplicados.</p>
+                <button onClick={clearFilters} className="boton-carrito">
+                  Ver todos los productos
+                </button>
               </div>
-            ))
-          ) : (
-            <div className="no-results">
-              <p>No se encontraron productos con los filtros aplicados.</p>
-              <button onClick={clearFilters} className="boton-carrito">
-                Ver todos los productos
-              </button>
-            </div>
+            )}
+          </div>
+          
+          {/* Paginación */}
+          {totalPages > 1 && (
+            <nav aria-label="Navegación de páginas" style={{ marginTop: '30px', display: 'flex', justifyContent: 'center' }}>
+              <ul className="pagination" style={{ display: 'flex', listStyle: 'none', gap: '5px', padding: 0 }}>
+                <li>
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
+                    aria-label="Página anterior"
+                  >
+                    Anterior
+                  </button>
+                </li>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <li key={page}>
+                    <button
+                      className={`btn ${currentPage === page ? 'btn-primary' : 'btn-outline-primary'}`}
+                      onClick={() => setCurrentPage(page)}
+                      aria-label={`Ir a página ${page}`}
+                      aria-current={currentPage === page ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  </li>
+                ))}
+                <li>
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                    aria-label="Página siguiente"
+                  >
+                    Siguiente
+                  </button>
+                </li>
+              </ul>
+            </nav>
           )}
-        </div>
+          
+          {totalPages > 1 && (
+            <p style={{ textAlign: 'center', marginTop: '10px', color: '#666' }}>
+              Página {currentPage} de {totalPages} ({filteredProducts.length} productos)
+            </p>
+          )}
+        </>
       )}
       
       <ProductModal
@@ -178,6 +255,7 @@ function Productos() {
         onClose={closeModal}
       />
     </main>
+    </>
   )
 }
 

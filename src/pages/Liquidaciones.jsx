@@ -1,14 +1,41 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { fetchProducts } from '../services/products'
 import ProductModal from '../components/ProductModal'
 import Badge from '../components/Badge'
+import { useProducts } from '../context/ProductContext'
+
+const LIQUIDACION_ITEMS = [
+  {
+    id: 1,
+    nombre: 'Vestido Floreado',
+    descuento: 70,
+    fallbackPrecio: 11000,
+    fallbackImagen: '/img/ropa-nina/vestido-flores-photoroom.png',
+    categoria: 'ninas',
+    stock: 'limitado'
+  },
+  {
+    id: 2,
+    nombre: 'Jogging',
+    descuento: 50,
+    fallbackPrecio: 9500,
+    fallbackImagen: '/img/ropa-nino/jogging.png',
+    categoria: 'ninos',
+    stock: 3
+  },
+  {
+    id: 3,
+    nombre: 'Anteojo',
+    descuento: 60,
+    fallbackPrecio: 7500,
+    fallbackImagen: '/img/accesorios/anteojo.png',
+    categoria: 'accesorios',
+    stock: 'disponible'
+  }
+]
 
 function Liquidaciones() {
-  const [products, setProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const { products, loading, error } = useProducts()
   const [selectedProduct, setSelectedProduct] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [timeLeft, setTimeLeft] = useState({
@@ -18,48 +45,23 @@ function Liquidaciones() {
     seconds: 45
   })
 
-  useEffect(() => {
-    let mounted = true
-    // Productos específicos para liquidaciones según las imágenes
-    const productosLiquidacion = [
-      {
-        id: 1,
-        nombre: "Vestido Floreado",
-        precio: 3300, // 70% descuento de $11,000
-        precioOriginal: 11000,
-        imagen: "/img/ropa-nina/vestido-flores-photoroom.png",
-        categoria: "ninas",
-        descuento: 70,
-        stock: "limitado"
-      },
-      {
-        id: 2,
-        nombre: "Jogging",
-        precio: 4750, // 50% descuento de $9,500
-        precioOriginal: 9500,
-        imagen: "/img/ropa-nino/jogging.png",
-        categoria: "ninos",
-        descuento: 50,
-        stock: 3
-      },
-      {
-        id: 3,
-        nombre: "Anteojo",
-        precio: 3000, // 60% descuento de $7,500
-        precioOriginal: 7500,
-        imagen: "/img/accesorios/anteojo.png",
-        categoria: "accesorios",
-        descuento: 60,
-        stock: "disponible"
+  const productosLiquidacion = useMemo(() => {
+    return LIQUIDACION_ITEMS.map((item, index) => {
+      const apiProduct = products.find((p) => String(p.nombre).toLowerCase() === String(item.nombre).toLowerCase())
+      const precioOriginal = apiProduct?.precio ?? item.fallbackPrecio
+      const precio = Math.round(precioOriginal * (1 - item.descuento / 100))
+      return {
+        id: apiProduct?.id || item.id || index + 1,
+        nombre: apiProduct?.nombre || item.nombre,
+        imagen: apiProduct?.imagen || item.fallbackImagen,
+        categoria: apiProduct?.categoria || item.categoria,
+        descuento: item.descuento,
+        stock: item.stock,
+        precioOriginal,
+        precio
       }
-    ]
-    
-    if (mounted) {
-      setProducts(productosLiquidacion)
-      setLoading(false)
-    }
-    return () => (mounted = false)
-  }, [])
+    })
+  }, [products])
 
   // Contador regresivo
   useEffect(() => {
@@ -127,7 +129,10 @@ function Liquidaciones() {
       
       {!loading && !error && (
         <div className="galeria">
-          {products.map((p) => (
+          {productosLiquidacion.length === 0 && (
+            <p style={{ width: '100%', textAlign: 'center' }}>No hay productos en liquidación.</p>
+          )}
+          {productosLiquidacion.map((p) => (
             <div key={p.id} className="producto liquidacion-item">
               <Badge type="descuento">-{p.descuento}%</Badge>
               {p.imagen && <img src={p.imagen} alt={p.nombre} />}

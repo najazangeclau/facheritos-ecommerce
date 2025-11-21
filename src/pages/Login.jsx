@@ -195,6 +195,19 @@ function Login() {
           >
             📝 Crear cuenta nueva
           </Link>
+          <div style={{ marginTop: '20px' }}>
+            <Link
+              to="/recuperar"
+              style={{
+                color: '#8a2be2',
+                textDecoration: 'none',
+                fontWeight: '600',
+                fontSize: '14px'
+              }}
+            >
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
         </div>
 
       </div>
