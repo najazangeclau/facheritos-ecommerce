@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { useState } from 'react'
@@ -6,6 +6,7 @@ import { useState } from 'react'
 function Navbar() {
   const { totalItems } = useCart()
   const { user, logout, isAuthenticated } = useAuth()
+  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [submenuStates, setSubmenuStates] = useState({explorar: false, ofertas: false, contacto: false})
@@ -21,8 +22,8 @@ function Navbar() {
   const handleSearch = (e) => {
     e.preventDefault()
     if (searchTerm.trim()) {
-      // Navegar a la página de productos con el término de búsqueda
-      window.location.href = `/productos?search=${encodeURIComponent(searchTerm.trim())}`
+      // Navegar a la página de productos con el término de búsqueda SIN recargar la app
+      navigate(`/productos?search=${encodeURIComponent(searchTerm.trim())}`)
     }
   }
 
